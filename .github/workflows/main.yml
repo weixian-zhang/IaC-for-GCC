@@ -1,0 +1,107 @@
+# name: terraform deploy
+
+# on:
+#   push:
+#     branches: 
+#        - main
+#   pull_request:
+
+       
+# jobs:
+#   terraform-plan:
+#     permissions: write-all
+
+#     name: 'Terraform Plan'
+#     runs-on: ubuntu-latest
+#     environment: dev
+#     env:
+#       ARM_SKIP_PROVIDER_REGISTRATION: true
+#       working-directory: ./GCC/h-landingzone
+#       TF_VAR_client_id: ${{ secrets.TF_VAR_client_id }}
+#       TF_VAR_client_secret: ${{ secrets.TF_VAR_client_secret }}
+#       TF_VAR_subscription_id: ${{ secrets.TF_VAR_subscription_id }}
+#       TF_VAR_tenant_id: ${{ secrets.TF_VAR_tenant_id }}
+#     outputs:
+#       tfplanExitCode: ${{ steps.tf-plan.outputs.exitcode }}
+
+#     defaults:
+#       run:
+#         working-directory: ${{ env.working-directory }}
+
+        
+#     steps:
+#     # Checkout the repository to the GitHub Actions runner
+#     - name: Checkout
+#       uses: actions/checkout@v3
+
+#     - name: check env var
+#       run: |
+#         echo $TF_VAR_client_id
+#         echo $TF_VAR_subscription_id
+#         echo $TF_VAR_tenant_id
+
+#     # Install the latest version of the Terraform CLI
+#     - name: Setup Terraform
+#       uses: hashicorp/setup-terraform@v2
+#       with:
+#         terraform_wrapper: false
+
+#     - name: Azure Login
+#       uses: Azure/login@v1.4.6
+#       with:
+#         # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS
+#         creds: '{"clientId":"${{ env.TF_VAR_client_id }}","clientSecret":"${{ env.TF_VAR_client_secret }}","subscriptionId":"${{ env.TF_VAR_subscription_id }}","tenantId":"${{ env.TF_VAR_tenant_id }}"}'
+      
+
+#     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+#     - name: Terraform Init
+#       run: terraform init
+
+#     # Checks that all Terraform configuration files adhere to a canonical format
+#     # Will fail the build if not
+#     # - name: Terraform Format
+#     #   run: terraform fmt -check
+#     #   working-directory: ./GCC/h-landingzone
+
+#     # Generates an execution plan for Terraform
+#     # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes.
+#     - name: Terraform Plan
+#       id: plan
+#       if: github.event_name == 'pull_request'
+#       run: terraform plan -no-color -input=false
+#       continue-on-error: true
+        
+#     - name: Update Pull Request
+#       uses: actions/github-script@v6
+#       if: github.event_name == 'pull_request'
+#       env:
+#         PLAN: "${{ steps.plan.outputs.stdout }}"
+#       with:
+#         github-token: ${{ secrets.GH_PAT_TOKEN }}
+#         script: |
+#           const output = `
+#           #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+#           #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+#           #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+    
+#           <details><summary>Show Plan</summary>
+    
+#           \`\`\`terraform\n
+#           ${process.env.PLAN}
+#           \`\`\`
+    
+#           </details>
+    
+#           *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+    
+#           github.rest.issues.createComment({
+#             issue_number: context.issue.number,
+#             owner: context.repo.owner,
+#             repo: context.repo.repo,
+#             body: output
+#           })
+
+#       # Terraform Apply applies the configuration. This step will only run when a commit is pushed to main
+#     - name: Terraform Apply
+#       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+#       run: terraform apply -auto-approve -input=false
