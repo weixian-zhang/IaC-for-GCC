@@ -18,7 +18,7 @@ variable "name" {
   
 }
 
-variable "vnet-name" {
+variable "vnet_name" {
   
 }
 

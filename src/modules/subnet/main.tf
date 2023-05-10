@@ -10,7 +10,8 @@ terraform {
 
 resource "azurerm_subnet" "subnet" {
     name = var.name
-    virtual_network_name = var.vnet-name
+    
+    virtual_network_name = var.vnet_name
     address_prefixes = [var.address_prefix]
     resource_group_name = var.resource_group_name
     private_endpoint_network_policies_enabled = true
