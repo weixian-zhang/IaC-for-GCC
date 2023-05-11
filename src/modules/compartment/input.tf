@@ -25,26 +25,31 @@ variable "tags" {
 variable "subnets" {
   type = list(object({
     type = object({
+
         subnet_name                 = string
-        address_space               = string
+        address_prefix              = string
         nsg_name                    = string
         tags                        = list(string)
 
-        security_rules = list(
-            object({
-                name                        = string
-                priority                    = number
-                direction                   = string
-                access                      = string
-                protocol                    = string
-                source_port_range           = string
-                destination_port_range      = string
-                source_address_prefix       = string
-                destination_address_prefix  = string
-            }))
-
-        route_table = object({
+        nsg_settings = object({
           name = string
+          tags = {}
+          security_rules = list(object({
+              name                   = string
+              priority                    =  number
+              direction                   = string
+              access                      = string
+              protocol                    = string
+              source_port_range           = string
+              destination_port_range      = string
+              source_address_prefix       = string
+              destination_address_prefix  = string
+            }))
+        })
+
+        route_table_settings =  object({
+          name = string
+          tags = {}
           routes = list(object({
             name                = string
             address_prefix      = string

@@ -24,6 +24,7 @@ resource "azurerm_network_security_group" "nsg" {
   location            = var.location
   resource_group_name = var.resource_group_name
   
+  tags = var.nsg_settings.tags
 
   dynamic "security_rule" {
     for_each = var.nsg_settings.security_rules
@@ -54,9 +55,7 @@ resource "azurerm_route_table" "udr" {
   location = var.location
   disable_bgp_route_propagation = false
 
-  tags = {
-    environment = "Production"
-  }
+  tags = var.route_table_settings.tags
 }
 
 resource "azurerm_route" "udr" {
