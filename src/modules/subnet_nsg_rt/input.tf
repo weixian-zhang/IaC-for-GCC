@@ -2,8 +2,14 @@ variable "env" {
   
 }
 
-variable "prefix_env_in_name" {
-  default = true
+# used for GCC compartment config, exist in every GCC module
+# contain properties: vnet_name and/or existing_vnet_id
+# subnet requires vnet_name while some resources require vnet_id.
+# this variable makes GCC compartment settings explicit
+variable "compartment" {
+    type = object({
+      vnet_name = string 
+    })
 }
 
 variable "location" {
@@ -15,10 +21,6 @@ variable "resource_group_name" {
 }
 
 variable "name" {
-  
-}
-
-variable "vnet_name" {
   
 }
 
