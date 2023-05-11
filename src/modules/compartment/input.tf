@@ -33,7 +33,7 @@ variable "subnets" {
 
         nsg_settings = object({
           name = string
-          tags = {}
+          tags = map(string)
           security_rules = list(object({
               name                   = string
               priority                    =  number
@@ -49,7 +49,7 @@ variable "subnets" {
 
         route_table_settings =  object({
           name = string
-          tags = {}
+          tags = map(string)
           routes = list(object({
             name                = string
             address_prefix      = string

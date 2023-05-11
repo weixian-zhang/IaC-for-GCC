@@ -1,4 +1,13 @@
 
+terraform {
+  required_providers {
+    azurerm = {
+        source = "hashicorp/azurerm"
+        version = "3.55.0"
+    }
+  }
+}
+
 resource "azurerm_virtual_network" "vnet" {
     
     name = var.vnet_name
@@ -22,5 +31,6 @@ module "subnet_nsg_rt" {
     nsg_settings = each.value.nsg_settings
 
     route_table_settings = each.value.route_table_settings
+
   
 }
