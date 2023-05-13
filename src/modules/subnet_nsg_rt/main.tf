@@ -7,6 +7,21 @@ terraform {
   }
 }
 
+provider "azurerm" {
+  features {}
+
+  subscription_id   = var.subscription_id
+  tenant_id         = var.tenant_id
+  client_id         = var.client_id
+  client_secret     = var.client_secret 
+}
+
+
+locals {
+
+  route_table_routes = (var.route_table_settings == null) ? [] : var.route_table_settings.routes
+}
+
 resource "azurerm_subnet" "subnet" {
     name = var.name
     resource_group_name = var.resource_group_name
@@ -16,8 +31,6 @@ resource "azurerm_subnet" "subnet" {
 
 
 resource "azurerm_network_security_group" "nsg" {
-  count               = var.nsg_settings == {} ? 0 : 1
-
   name                = var.nsg_settings.name
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -25,29 +38,29 @@ resource "azurerm_network_security_group" "nsg" {
   tags = var.nsg_settings.tags
 
   dynamic "security_rule" {
-    for_each = var.nsg_settings.security_rules
+    for_each = { for rule in var.nsg_settings.security_rules: rule.name => rule }
 
     content {
-      name                        = each.value[0] == "" ? "Default_rule" : each.value[0]
-      priority                    = each.value[1] == "" ? 1000 : each.value[1]
-      direction                   = each.value[2] == "" ? "Inbound" : each.value[2]
-      access                      = each.value[3] == "" ? "Deny" : each.value[3]
-      protocol                    = each.value[4] == "" ? "Tcp" : each.value[4]
-      source_port_range           = each.value[5] == "" ? "*" : each.value[5]
-      destination_port_range      = each.value[6] == "" ? "*" : each.value[6]
-      source_address_prefix       = each.value[7] == "" ? "*" : each.value[7]
-      destination_address_prefix  = each.value[8] == "" ? "*" : each.value[8]
+      name                        = security_rule.value["name"]
+      priority                    = security_rule.value["priority"]
+      direction                   = security_rule.value["direction"]
+      access                      = security_rule.value["access"]
+      protocol                    = security_rule.value["protocol"]
+      source_port_range           = security_rule.value["source_port_range"]
+      destination_port_range      = security_rule.value["destination_port_range"]
+      source_address_prefix       = security_rule.value["source_address_prefix"]
+      destination_address_prefix  = security_rule.value["destination_address_prefix"]
     }
   }
 }
 
 resource "azurerm_subnet_network_security_group_association" "nsg_sub_assoc" {
-    count               = var.nsg_settings == {} ? 0 : 1
     subnet_id = azurerm_subnet.subnet.id
-    network_security_group_id = azurerm_network_security_group.nsg[count.index].id
+    network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
 resource "azurerm_route_table" "udr" {
+  count = var.route_table_settings == null ? 0 : 1
   name = var.route_table_settings.name
   resource_group_name = var.resource_group_name
   location = var.location
@@ -58,7 +71,7 @@ resource "azurerm_route_table" "udr" {
 
 resource "azurerm_route" "udr" {
 
-  for_each = var.route_table_settings.routes
+  for_each = { for idx, route in local.route_table_routes: idx => route }
 
   name                = "acceptanceTestRoute1"
   resource_group_name = var.resource_group_name
