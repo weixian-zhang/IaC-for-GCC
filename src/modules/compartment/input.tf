@@ -1,3 +1,4 @@
+
 variable "env" {
 }
 
@@ -9,9 +10,10 @@ variable "resource_group_name" {
   
 }
 
-# vnet name
-variable "vnet_name" {
-  
+variable "compartment" {
+    type = object({
+      vnet_name = string 
+    })
 }
 
 variable "address_spaces" {
@@ -19,45 +21,43 @@ variable "address_spaces" {
 }
 
 variable "tags" {
- 
+  default = {}
 }
 
 variable "subnets" {
-  type = list(object({
-    type = object({
+  default = null
+  type = list(
+            object({
+                subnet_name                 = string
+                address_prefix              = string
 
-        subnet_name                 = string
-        address_prefix              = string
-        nsg_name                    = string
-        tags                        = list(string)
+                nsg_settings =  optional(
+                  object({
+                    name = string
+                    tags = map(string)
+                    security_rules = list(object({
+                        name                   = string
+                        priority                    =  number
+                        direction                   = string
+                        access                      = string
+                        protocol                    = string
+                        source_port_range           = string
+                        destination_port_range      = string
+                        source_address_prefix       = string
+                        destination_address_prefix  = string
+                        }))
+                  }))
 
-        nsg_settings = object({
-          name = string
-          tags = map(string)
-          security_rules = list(object({
-              name                   = string
-              priority                    =  number
-              direction                   = string
-              access                      = string
-              protocol                    = string
-              source_port_range           = string
-              destination_port_range      = string
-              source_address_prefix       = string
-              destination_address_prefix  = string
-            }))
-        })
-
-        route_table_settings =  object({
-          name = string
-          tags = map(string)
-          routes = list(object({
-            name                = string
-            address_prefix      = string
-            next_hop_type       = string
-          }))
-        })
-        
-      })
-  })
-  )
+                route_table_settings =  optional(object({
+                name = string
+                tags = map(string)
+                routes = list(object({
+                    name                    = string
+                    address_prefix          = string
+                    next_hop_type           = string
+                    next_hop_in_ip_address  = string
+                }))
+                }) )
+            })
+    )
 }

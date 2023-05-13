@@ -1,21 +1,3 @@
-terraform {
-  required_providers {
-    azurerm = {
-        source = "hashicorp/azurerm"
-        version = "3.55.0"
-    }
-  }
-}
-
-provider "azurerm" {
-  features {}
-
-  subscription_id   = var.subscription_id
-  tenant_id         = var.tenant_id
-  client_id         = var.client_id
-  client_secret     = var.client_secret 
-}
-
 
 locals {
 
@@ -31,6 +13,7 @@ resource "azurerm_subnet" "subnet" {
 
 
 resource "azurerm_network_security_group" "nsg" {
+  count               = var.nsg_settings == null ? 0 : 1
   name                = var.nsg_settings.name
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -55,8 +38,9 @@ resource "azurerm_network_security_group" "nsg" {
 }
 
 resource "azurerm_subnet_network_security_group_association" "nsg_sub_assoc" {
+    count               = var.nsg_settings == null ? 0 : 1
     subnet_id = azurerm_subnet.subnet.id
-    network_security_group_id = azurerm_network_security_group.nsg.id
+    network_security_group_id = azurerm_network_security_group.nsg[count.index].id
 }
 
 resource "azurerm_route_table" "udr" {
@@ -70,13 +54,13 @@ resource "azurerm_route_table" "udr" {
 }
 
 resource "azurerm_route" "udr" {
+  count = length(local.route_table_routes)
+  #for_each = { for idx, route in local.route_table_routes: idx => route }
 
-  for_each = { for idx, route in local.route_table_routes: idx => route }
-
-  name                = "acceptanceTestRoute1"
+  name                = local.route_table_routes[count.index].name
   resource_group_name = var.resource_group_name
-  route_table_name    = var.route_table_settings.name
-  address_prefix      = each.value.address_prefix
-  next_hop_type       = each.value.next_hop_type
-  next_hop_in_ip_address = each.value.next_hop_in_ip_address
+  route_table_name    = azurerm_route_table.udr[0].name
+  address_prefix      = local.route_table_routes[count.index].address_prefix
+  next_hop_type       = local.route_table_routes[count.index].next_hop_type
+  next_hop_in_ip_address = local.route_table_routes[count.index].next_hop_in_ip_address
 }

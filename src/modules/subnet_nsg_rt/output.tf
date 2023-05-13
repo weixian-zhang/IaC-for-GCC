@@ -1,25 +1,26 @@
 
 
 output "subnet_id" {
-  value = {
-    subnet_id = azurerm_subnet.subnet.id
-  }
+  value = azurerm_subnet.subnet.id
 }
 
 output "subnet_name" {
-  value = {
-    subnet_id = azurerm_subnet.subnet.name
-  }
+  value = azurerm_subnet.subnet.name
+  
 }
 
 output "nsg_id" {
-  value = {
-    nsg_id = azurerm_network_security_group.nsg[*].id
-  }
+  value = azurerm_network_security_group.nsg[*].id
 }
 
-# output "route_table_id" {
-#   value = {
-#     route_table_id = azurerm_route_table.udr[*].id
-#   }
-# }
+output "nsg_name" {
+  value = azurerm_network_security_group.nsg[*].name
+}
+
+output "route_table_id" {
+  value =  azurerm_route_table.udr[*].id
+}
+
+output "route_table_name" {
+  value =  azurerm_route_table.udr[*].name
+}
