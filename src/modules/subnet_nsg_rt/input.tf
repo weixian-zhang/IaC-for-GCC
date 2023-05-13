@@ -1,3 +1,16 @@
+variable "client_id" {
+}
+
+variable "client_secret" {
+}
+
+variable "subscription_id" {
+}
+
+variable "tenant_id" {
+}
+
+
 variable "env" {
   
 }
@@ -33,7 +46,7 @@ variable "nsg_settings" {
     name = string
     tags = map(string)
     security_rules = list(object({
-        name                   = string
+        name                        = string
         priority                    =  number
         direction                   = string
         access                      = string
@@ -44,11 +57,16 @@ variable "nsg_settings" {
         destination_address_prefix  = string
       }))
   })
+
+   validation {
+    condition = var.nsg_settings == null || length(var.nsg_settings.security_rules) > 0
+    error_message = "All destination_types must be one of CIDR_BLOCK,NETWORK_SECURITY_GROUP or SERVICE_CIDR_BLOCK!"
+   }
 }
 
 # next hop type = VirtualNetworkGateway, VnetLocal, Internet, VirtualAppliance or None
 variable "route_table_settings" {
-    
+    default = null
     type = object({
       name = string
       tags = map(string)
@@ -56,6 +74,7 @@ variable "route_table_settings" {
         name                = string
         address_prefix      = string
         next_hop_type       = string
+        next_hop_in_ip_address = string
       }))
     })
 }
