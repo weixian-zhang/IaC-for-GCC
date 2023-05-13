@@ -78,4 +78,5 @@ resource "azurerm_route" "udr" {
   route_table_name    = var.route_table_settings.name
   address_prefix      = each.value.address_prefix
   next_hop_type       = each.value.next_hop_type
+  next_hop_in_ip_address = each.value.next_hop_in_ip_address
 }
