@@ -1,15 +1,3 @@
-variable "client_id" {
-}
-
-variable "client_secret" {
-}
-
-variable "subscription_id" {
-}
-
-variable "tenant_id" {
-}
-
 
 variable "env" {
   
@@ -42,10 +30,11 @@ variable "address_prefix" {
 }
 
 variable "nsg_settings" {
+  default = null
   type = object({
     name = string
     tags = map(string)
-    security_rules = list(object({
+    security_rules = optional(list(object({
         name                        = string
         priority                    =  number
         direction                   = string
@@ -55,13 +44,13 @@ variable "nsg_settings" {
         destination_port_range      = string
         source_address_prefix       = string
         destination_address_prefix  = string
-      }))
+      })))
   })
 
-   validation {
-    condition = var.nsg_settings == null || length(var.nsg_settings.security_rules) > 0
-    error_message = "All destination_types must be one of CIDR_BLOCK,NETWORK_SECURITY_GROUP or SERVICE_CIDR_BLOCK!"
-   }
+  #  validation {
+  #   condition = var.nsg_settings == null || length(var.nsg_settings.security_rules) > 0
+  #   error_message = "All destination_types must be one of CIDR_BLOCK,NETWORK_SECURITY_GROUP or SERVICE_CIDR_BLOCK!"
+  #  }
 }
 
 # next hop type = VirtualNetworkGateway, VnetLocal, Internet, VirtualAppliance or None
