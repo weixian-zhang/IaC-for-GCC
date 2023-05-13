@@ -18,8 +18,8 @@ output "nsg_id" {
   }
 }
 
-output "route_table_id" {
-  value = {
-    route_table_id = azurerm_route_table.udr.id
-  }
-}
+# output "route_table_id" {
+#   value = {
+#     route_table_id = azurerm_route_table.udr[*].id
+#   }
+# }
