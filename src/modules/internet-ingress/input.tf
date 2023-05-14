@@ -22,7 +22,7 @@ variable "location" {
 }
 
 variable "resource_group_name" {
-    
+    default = ""
 }
 
 variable "compartment" {
