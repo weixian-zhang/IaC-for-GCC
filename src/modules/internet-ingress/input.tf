@@ -76,3 +76,119 @@ variable "subnets" {
             })
     )
 }
+
+variable "firewall_settings" {
+    
+  default = null
+
+  type = object({
+    firewall_name = string
+    firewall_subnet_cidr = string
+
+    network_rule_collection = optional(list(object({
+        name     = string
+        priority = number
+        action   = string
+        rules = list(object({
+            name                  = string
+            source_addresses      = list(string)
+            destination_ports     = list(string)
+            destination_addresses = list(string)
+            protocols             = list(string)
+            destination_fqdns     = list(string)
+            destination_ip_groups = list(string)
+            source_ip_groups      = list(string)
+        }))
+    })))
+
+    application_rule_collection = optional(list(object({
+        name     = string
+        priority = number
+        action   = string
+        rules = list(object({
+            name             = string
+            source_addresses = list(string)
+            target_fqdns     = list(string)
+            source_ip_groups = list(string)
+            protocols = list(object({
+            port = string
+            type = string
+            }))
+        }))
+    })))
+
+    nat_rule_collection = optional(list(object({
+        name     = string
+        priority = number
+        action   = string
+        rules    = list(object({
+                name                  = string
+                source_addresses      = list(string)
+                destination_ports     = list(string)
+                destination_addresses = list(string) # Firewall public IP Address
+                translated_port       = number
+                translated_address    = string
+                protocols             = list(string)
+                source_ip_groups      = list(string)
+        }))
+    })))
+
+  })
+}
+
+
+
+# variable "firewall_network_rule_collection" {
+#     type = optional(object({
+#         name     = string
+#         priority = number
+#         action   = string
+#         rules = list(object({
+#             name                  = string
+#             source_addresses      = list(string)
+#             destination_ports     = list(string)
+#             destination_addresses = list(string)
+#             protocols             = list(string)
+#             destination_fqdns     = list(string)
+#             destination_ip_groups = list(string)
+#             source_ip_groups      = list(string)
+#         }))
+#     }))
+# }
+
+
+# variable "firewall_application_rule_collection" {
+#   type = optional(list(object({
+#     name     = string
+#     priority = number
+#     action   = string
+#     rules = list(object({
+#         name             = string
+#         source_addresses = list(string)
+#         target_fqdns     = list(string)
+#         source_ip_groups = list(string)
+#         protocols = list(object({
+#           port = string
+#           type = string
+#         }))
+#     }))
+#   })))
+# }
+
+# variable "firewall_nat_rule_collection" {
+#   type = optional(list(object({
+#       name     = string
+#       priority = number
+#       action   = string
+#       rules    = list(object({
+#             name                  = string
+#             source_addresses      = list(string)
+#             destination_ports     = list(string)
+#             destination_addresses = list(string) # Firewall public IP Address
+#             translated_port       = number
+#             translated_address    = string
+#             protocols             = list(string)
+#             source_ip_groups      = list(string)
+#       }))
+#   })))
+# }
