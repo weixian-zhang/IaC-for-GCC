@@ -23,7 +23,7 @@ provider "azurerm" {
 # }
 
 resource "azurerm_resource_group" "rg" {
-    #yescount = length(data.azurerm_resource_group.data_existing_rg)
+    count = (var.resource_group_name != "") ? 1 : 0
     name = var.resource_group_name
     location = var.location
     tags = var.tags

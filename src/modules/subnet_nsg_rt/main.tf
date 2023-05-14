@@ -49,13 +49,12 @@ resource "azurerm_route_table" "udr" {
   resource_group_name = var.resource_group_name
   location = var.location
   disable_bgp_route_propagation = false
-
+  
   tags = var.route_table_settings.tags
 }
 
 resource "azurerm_route" "udr" {
   count = length(local.route_table_routes)
-  #for_each = { for idx, route in local.route_table_routes: idx => route }
 
   name                = local.route_table_routes[count.index].name
   resource_group_name = var.resource_group_name
@@ -63,4 +62,10 @@ resource "azurerm_route" "udr" {
   address_prefix      = local.route_table_routes[count.index].address_prefix
   next_hop_type       = local.route_table_routes[count.index].next_hop_type
   next_hop_in_ip_address = local.route_table_routes[count.index].next_hop_in_ip_address
+}
+
+resource "azurerm_subnet_route_table_association" "rt_subnet_association" {
+    count = var.route_table_settings == null ? 0 : 1
+    subnet_id = azurerm_subnet.subnet.id
+    route_table_id = azurerm_route_table.udr[count.index].id
 }
