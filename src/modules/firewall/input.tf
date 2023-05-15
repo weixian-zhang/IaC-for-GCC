@@ -77,21 +77,22 @@ variable "sku" {
 
 
 variable "network_rule_collection" {
-    type = list(object({
-        name     = string
-        priority = number
-        action   = string
-        rules = list(object({
-            name                  = string
-            source_addresses      = list(string)
-            destination_ports     = list(string)
-            destination_addresses = list(string)
-            protocols             = list(string)  # ["TCP", "UDP"]
-            destination_fqdns     = list(string)
-            destination_ip_groups = list(string)
-            source_ip_groups      = list(string)
-        }))
-    }))
+  default = []
+  type = list(object({
+      name     = string
+      priority = number
+      action   = string
+      rules = list(object({
+          name                  = string
+          source_addresses      = list(string)
+          destination_ports     = list(string)
+          destination_addresses = list(string)
+          protocols             = list(string)  # ["TCP", "UDP"]
+          destination_fqdns     = list(string)
+          destination_ip_groups = list(string)
+          source_ip_groups      = list(string)
+      }))
+  }))
 }
 
 
@@ -101,6 +102,7 @@ variable "network_rule_collection" {
 # web categories: "ChildAbuseImages","Gambling","HateAndIntolerance","IllegalDrug","IllegalSoftware","Nudity",
 # "PornographyOrSexuallyExplicit" (does not work), "Violence","Weapons"
 variable "application_rule_collection" {
+  default = []
   type = list(object({
     name     = string
     priority = number
@@ -112,6 +114,7 @@ variable "application_rule_collection" {
         destination_urls = optional(list(string)) 
         destination_fqdn_tags = optional(list(string))
         source_ip_groups = optional(list(string))
+        web_categories   = optional(list(string))
         protocols = list(object({
           port = string
           type = string
@@ -121,6 +124,7 @@ variable "application_rule_collection" {
 }
 
 variable "nat_rule_collection" {
+  default = []
   type = list(object({
       name     = string
       priority = number

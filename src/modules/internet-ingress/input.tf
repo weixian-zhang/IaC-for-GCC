@@ -94,7 +94,7 @@ variable "firewall_settings" {
             source_addresses      = list(string)
             destination_ports     = list(string)
             destination_addresses = list(string)
-            protocols             = list(string)
+            protocols             = list(string)  # ["TCP", "UDP"]
             destination_fqdns     = list(string)
             destination_ip_groups = list(string)
             source_ip_groups      = list(string)
@@ -105,16 +105,18 @@ variable "firewall_settings" {
         name     = string
         priority = number
         action   = string
-        rules = list(object({
+        rules = optional(list(object({
             name             = string
             source_addresses = list(string)
-            target_fqdns     = list(string)
-            source_ip_groups = list(string)
+            destination_fqdns     = optional(list(string)) 
+            destination_urls = optional(list(string)) 
+            destination_fqdn_tags = optional(list(string))
+            source_ip_groups = optional(list(string))
             protocols = list(object({
             port = string
             type = string
             }))
-        }))
+        })))
     })))
 
     nat_rule_collection = optional(list(object({

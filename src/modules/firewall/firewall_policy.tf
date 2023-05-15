@@ -5,6 +5,9 @@ resource "azurerm_firewall_policy" "firewall_policy" {
   resource_group_name = var.resource_group_name
   location            = var.location
   threat_intelligence_mode = "Deny"
+  dns {
+    proxy_enabled = true
+  }
   tags = var.tags
 }
 
@@ -14,6 +17,7 @@ resource "azurerm_firewall_policy_rule_collection_group" "firewall_policy_rules"
   name               = "firewall-policy-rules"
   firewall_policy_id = azurerm_firewall_policy.firewall_policy[0].id
   priority           = 500
+  
 
   dynamic "nat_rule_collection" {
       for_each = try({ for collection in var.nat_rule_collection : collection.name => collection }, toset([]))
@@ -81,7 +85,10 @@ resource "azurerm_firewall_policy_rule_collection_group" "firewall_policy_rules"
               name             = rule.value.name
               source_addresses = rule.value.source_addresses
               source_ip_groups = rule.value.source_ip_groups
-              destination_fqdns     = rule.value.destination_fqdns
+              destination_fqdns = rule.value.destination_fqdns
+              destination_urls = rule.value.destination_urls
+              destination_fqdn_tags = rule.value.destination_fqdn_tags
+              web_categories   =  rule.value.web_categories
 
               dynamic "protocols" {
                 for_each = rule.value.protocols
@@ -94,6 +101,4 @@ resource "azurerm_firewall_policy_rule_collection_group" "firewall_policy_rules"
           }
       }
   }
-
-
 }
