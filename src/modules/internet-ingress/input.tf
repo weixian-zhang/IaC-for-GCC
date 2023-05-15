@@ -1,4 +1,4 @@
-# azure authn
+# azure authn for testing only
 
 variable "client_id" {
 }
@@ -75,4 +75,70 @@ variable "subnets" {
                 )
             })
     )
+}
+
+variable "firewall_settings" {
+    
+  default = null
+
+  type = object({
+    firewall_name               = string
+    public_ip_name              = string
+    policy_name                 = optional(string) # no existing, create a new firewall policy
+    private_ip_ranges           = optional(set(string))
+    sku_tier                    = optional(string) # default to Standard
+    tags = optional(map(string))
+
+    network_rule_collection = optional(list(object({
+        name     = string
+        priority = number
+        action   = string
+        rules = list(object({
+            name                  = string
+            source_addresses      = list(string)
+            destination_ports     = list(string)
+            destination_addresses = list(string)
+            protocols             = list(string)  # ["TCP", "UDP"]
+            destination_fqdns     = list(string)
+            destination_ip_groups = list(string)
+            source_ip_groups      = list(string)
+        }))
+    })))
+
+    application_rule_collection = optional(list(object({
+        name     = string
+        priority = number
+        action   = string
+        rules = optional(list(object({
+            name             = string
+            source_addresses = list(string)
+            destination_fqdns     = optional(list(string)) 
+            destination_urls = optional(list(string)) 
+            destination_fqdn_tags = optional(list(string))
+            web_categories   = optional(list(string))
+            source_ip_groups = optional(list(string))
+            protocols = list(object({
+                port = string
+                type = string
+            }))
+        })))
+    })))
+
+    nat_rule_collection = optional(list(object({
+      name     = string
+      priority = number
+      action   = string
+      rules    = list(object({
+            name                  = string
+            source_addresses      = list(string)
+            destination_ports     = list(string)
+            destination_address   = optional(string) # default to Firewall public IP Address
+            translated_port       = number
+            translated_address    = string
+            protocols             = list(string)  # ["TCP", "UDP"]
+            source_ip_groups      = list(string)
+      }))
+  })))
+
+  })
 }
