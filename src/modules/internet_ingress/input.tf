@@ -1,16 +1,16 @@
 # azure authn for testing only
 
-variable "client_id" {
-}
+# variable "client_id" {
+# }
 
-variable "client_secret" {
-}
+# variable "client_secret" {
+# }
 
-variable "subscription_id" {
-}
+# variable "subscription_id" {
+# }
 
-variable "tenant_id" {
-}
+# variable "tenant_id" {
+# }
 
 ###
 
