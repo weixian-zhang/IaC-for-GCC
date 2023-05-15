@@ -1,6 +1,4 @@
 resource "azurerm_firewall_policy" "firewall_policy" {
-  count = (var.existing_firewall_policy_id == "") ? 0 : 1
-
   name                = var.firewall_policy_name
   resource_group_name = var.resource_group_name
   location            = var.location
@@ -12,10 +10,8 @@ resource "azurerm_firewall_policy" "firewall_policy" {
 }
 
 resource "azurerm_firewall_policy_rule_collection_group" "firewall_policy_rules" {
-  count = (var.existing_firewall_policy_id == "") ? 0 : 1
-
   name               = "firewall-policy-rules"
-  firewall_policy_id = azurerm_firewall_policy.firewall_policy[0].id
+  firewall_policy_id = azurerm_firewall_policy.firewall_policy.id
   priority           = 500
   
 
@@ -35,7 +31,7 @@ resource "azurerm_firewall_policy_rule_collection_group" "firewall_policy_rules"
               source_addresses      = rule.value.source_addresses
               source_ip_groups      = rule.value.source_ip_groups
               destination_ports     = rule.value.destination_ports
-              destination_address = rule.value.destination_address
+              destination_address   = azurerm_public_ip.firewall_public_ip.ip_address
               translated_address    = rule.value.translated_address
               translated_port       = rule.value.translated_port
               protocols             = rule.value.protocols
@@ -93,8 +89,8 @@ resource "azurerm_firewall_policy_rule_collection_group" "firewall_policy_rules"
               dynamic "protocols" {
                 for_each = rule.value.protocols
                 content {
-                  port = protocol.value.port
-                  type = protocol.value.type
+                  port = protocols.value.port
+                  type = protocols.value.type
                 }
               }
             }

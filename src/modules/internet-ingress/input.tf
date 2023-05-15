@@ -82,8 +82,12 @@ variable "firewall_settings" {
   default = null
 
   type = object({
-    firewall_name = string
-    firewall_subnet_cidr = string
+    firewall_name               = string
+    public_ip_name              = string
+    policy_name                 = optional(string) # no existing, create a new firewall policy
+    private_ip_ranges           = optional(set(string))
+    sku_tier                    = optional(string) # default to Standard
+    tags = optional(map(string))
 
     network_rule_collection = optional(list(object({
         name     = string
@@ -111,29 +115,30 @@ variable "firewall_settings" {
             destination_fqdns     = optional(list(string)) 
             destination_urls = optional(list(string)) 
             destination_fqdn_tags = optional(list(string))
+            web_categories   = optional(list(string))
             source_ip_groups = optional(list(string))
             protocols = list(object({
-            port = string
-            type = string
+                port = string
+                type = string
             }))
         })))
     })))
 
     nat_rule_collection = optional(list(object({
-        name     = string
-        priority = number
-        action   = string
-        rules    = list(object({
-                name                  = string
-                source_addresses      = list(string)
-                destination_ports     = list(string)
-                destination_addresses = list(string) # Firewall public IP Address
-                translated_port       = number
-                translated_address    = string
-                protocols             = list(string)
-                source_ip_groups      = list(string)
-        }))
-    })))
+      name     = string
+      priority = number
+      action   = string
+      rules    = list(object({
+            name                  = string
+            source_addresses      = list(string)
+            destination_ports     = list(string)
+            destination_address   = optional(string) # default to Firewall public IP Address
+            translated_port       = number
+            translated_address    = string
+            protocols             = list(string)  # ["TCP", "UDP"]
+            source_ip_groups      = list(string)
+      }))
+  })))
 
   })
 }

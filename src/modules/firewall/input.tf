@@ -1,20 +1,3 @@
-# azure authn for testing only
-
-variable "client_id" {
-}
-
-variable "client_secret" {
-}
-
-variable "subscription_id" {
-}
-
-variable "tenant_id" {
-}
-
-###
-
-
 
 variable "env" {
 }
@@ -40,39 +23,23 @@ variable "compartment" {
     })
 }
 
-variable "firewall_name" {
-  
-}
-
-variable "subnet_cidr" {
-  
-}
 
 variable "public_ip_name" {
-  
-}
-
-variable "existing_firewall_policy_id" {
-  default = ""
 }
 
 variable "firewall_policy_name" {
 }
 
-variable "private_ip_ranges" {
-  description = "A list of private IP ranges to which traffic will not be SNAT."
-  default = []
-}
-
-variable "firewall_private_ip_ranges" {
+variable "private_ip_ranges_not_snat" {
   description = "A list of SNAT private CIDR IP ranges, or the special string `IANAPrivateRanges`, which indicates Azure Firewall does not SNAT when the destination IP address is a private range per IANA RFC 1918."
-  type        = list(string)
-  default     = null
+  default = []
+  type = set(string)
 }
 
 # Standard or Premium
-variable "sku" {
+variable "sku_tier" {
     default = "Standard"
+    type = string
 }
 
 
@@ -133,7 +100,7 @@ variable "nat_rule_collection" {
             name                  = string
             source_addresses      = list(string)
             destination_ports     = list(string)
-            destination_address   = string # Firewall public IP Address
+            destination_address   = optional(string) # Firewall public IP Address
             translated_port       = number
             translated_address    = string
             protocols             = list(string)  # ["TCP", "UDP"]

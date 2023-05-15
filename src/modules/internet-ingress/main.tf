@@ -56,13 +56,22 @@ module "firewall" {
   source = "../firewall"
   
   env = var.env
+  
   location = var.location
+
   resource_group_name = var.resource_group_name
-  compartment = { vnet_name = var.compartment.vnet_name }
+
+  compartment = { subnet_id = module.compartment.subnet_info.subnets[local.azfw_subneg_name] }
 
   name = var.firewall_settings.firewall_name
 
-  subnet_cidr = var.firewall_settings.firewall_subnet_cidr
+  public_ip_name = var.firewall_settings.public_ip_name
+
+  firewall_policy_name = var.firewall_settings.policy_name
+
+  sku_tier = var.firewall_settings.sku_tier
+
+  private_ip_ranges_not_snat = var.firewall_settings.private_ip_ranges
 
   nat_rule_collection = var.firewall_settings.nat_rule_collection
 
