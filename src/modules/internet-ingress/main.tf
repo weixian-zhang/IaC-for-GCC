@@ -58,15 +58,19 @@ module "firewall" {
   env = var.env
   location = var.location
   resource_group_name = var.resource_group_name
-  vnet_name = var.compartment.vnet_name
+  compartment = { vnet_name = var.compartment.vnet_name }
 
   name = var.firewall_settings.firewall_name
+
   subnet_cidr = var.firewall_settings.firewall_subnet_cidr
+
   nat_rule_collection = var.firewall_settings.nat_rule_collection
+
   network_rule_collection = var.firewall_settings.network_rule_collection
+
   application_rule_collection = var.firewall_settings.application_rule_collection
 
   depends_on = [ 
       module.compartment
-   ]
+  ]
 }

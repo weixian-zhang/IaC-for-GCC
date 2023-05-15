@@ -1,4 +1,4 @@
-# azure authn
+# azure authn for testing only
 
 variable "client_id" {
 }
@@ -135,60 +135,3 @@ variable "firewall_settings" {
 
   })
 }
-
-
-
-# variable "firewall_network_rule_collection" {
-#     type = optional(object({
-#         name     = string
-#         priority = number
-#         action   = string
-#         rules = list(object({
-#             name                  = string
-#             source_addresses      = list(string)
-#             destination_ports     = list(string)
-#             destination_addresses = list(string)
-#             protocols             = list(string)
-#             destination_fqdns     = list(string)
-#             destination_ip_groups = list(string)
-#             source_ip_groups      = list(string)
-#         }))
-#     }))
-# }
-
-
-# variable "firewall_application_rule_collection" {
-#   type = optional(list(object({
-#     name     = string
-#     priority = number
-#     action   = string
-#     rules = list(object({
-#         name             = string
-#         source_addresses = list(string)
-#         target_fqdns     = list(string)
-#         source_ip_groups = list(string)
-#         protocols = list(object({
-#           port = string
-#           type = string
-#         }))
-#     }))
-#   })))
-# }
-
-# variable "firewall_nat_rule_collection" {
-#   type = optional(list(object({
-#       name     = string
-#       priority = number
-#       action   = string
-#       rules    = list(object({
-#             name                  = string
-#             source_addresses      = list(string)
-#             destination_ports     = list(string)
-#             destination_addresses = list(string) # Firewall public IP Address
-#             translated_port       = number
-#             translated_address    = string
-#             protocols             = list(string)
-#             source_ip_groups      = list(string)
-#       }))
-#   })))
-# }
