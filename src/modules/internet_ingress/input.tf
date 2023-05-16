@@ -1,16 +1,16 @@
 # azure authn for testing only
 
-# variable "client_id" {
-# }
+variable "client_id" {
+}
 
-# variable "client_secret" {
-# }
+variable "client_secret" {
+}
 
-# variable "subscription_id" {
-# }
+variable "subscription_id" {
+}
 
-# variable "tenant_id" {
-# }
+variable "tenant_id" {
+}
 
 ###
 
@@ -84,7 +84,9 @@ variable "firewall_settings" {
   type = object({
     firewall_name               = string
     public_ip_name              = string
-    policy_name                 = optional(string) # no existing, create a new firewall policy
+    log_analytics_worspace_name   = string
+    log_analytics_workspace_resource_group = string
+    policy_name                 = string # no existing, create a new firewall policy
     private_ip_ranges           = optional(set(string))
     sku_tier                    = optional(string) # default to Standard
     tags = optional(map(string))

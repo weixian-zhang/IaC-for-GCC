@@ -1,18 +1,10 @@
 
 
-variable "client_id" {
+variable "log_analytics_workspace_name" {
+  type = string
 }
 
-variable "client_secret" {
-}
-
-variable "subscription_id" {
-}
-
-variable "tenant_id" {
-}
-
-variable "log_analytics_workspace_id" {
+variable "log_analytics_workspace_resource_group" {
   type = string
 }
 

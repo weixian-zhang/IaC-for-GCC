@@ -17,3 +17,7 @@ output "firewall_policy_id" {
 output "firewall_public_ip" {
   value = module.firewall[0].firewall_public_ip
 }
+
+output "firewall_diagnostic_settings_log_category_types" {
+    value = module.firewall[0].diagnostic_settings_log_category_types
+}
