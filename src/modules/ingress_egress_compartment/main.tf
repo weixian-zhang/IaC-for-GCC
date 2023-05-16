@@ -65,6 +65,10 @@ module "firewall" {
 
   name = var.firewall_settings.firewall_name
 
+  log_analytics_workspace_name = var.firewall_settings.log_analytics_worspace_name
+
+  log_analytics_workspace_resource_group = var.firewall_settings.log_analytics_workspace_resource_group
+
   public_ip_name = var.firewall_settings.public_ip_name
 
   firewall_policy_name = var.firewall_settings.policy_name

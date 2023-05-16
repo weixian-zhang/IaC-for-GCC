@@ -29,3 +29,18 @@ resource "azurerm_firewall" "firewall" {
 
   tags = var.tags
 }
+
+module diagnostic_settings {
+  source = "../diagnostic_settings"
+
+  log_analytics_workspace_name =  var.log_analytics_workspace_name
+  log_analytics_workspace_resource_group = var.log_analytics_workspace_resource_group
+
+  resource_ids = [ 
+    azurerm_firewall.firewall.id
+  ]
+
+  depends_on = [ 
+    azurerm_firewall.firewall
+   ]
+}

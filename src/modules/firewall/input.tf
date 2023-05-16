@@ -23,6 +23,14 @@ variable "compartment" {
     })
 }
 
+variable "log_analytics_workspace_name" {
+  type = string
+}
+
+variable "log_analytics_workspace_resource_group" {
+  type = string
+}
+
 
 variable "public_ip_name" {
 }
