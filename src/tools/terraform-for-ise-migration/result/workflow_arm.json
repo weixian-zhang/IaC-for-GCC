@@ -1,0 +1,120 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {},
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "logicapp-workflow-from-terraform",
+            "location": "eastasia",
+            "properties": {
+                "state": "Enabled",
+                                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "triggers": {
+                    "manual": {
+                        "type": "Request",
+                        "kind": "Http",
+                        "inputs": {}
+                    }
+                    },
+                    "actions": {
+                    "HTTP": {
+                        "runAfter": {
+                        "var_Sales_Info": [
+                            "Succeeded"
+                        ]
+                        },
+                        "type": "Http",
+                        "inputs": {
+                        "body": "@variables('jsonObject')",
+                        "method": "POST",
+                        "uri": "https://httpbin.org/post"
+                        }
+                    },
+                    "Response": {
+                        "runAfter": {},
+                        "type": "Response",
+                        "kind": "Http",
+                        "inputs": {
+                        "statusCode": 200
+                        }
+                    },
+                    "var_Json_accounting": {
+                        "runAfter": {
+                        "Response": [
+                            "Succeeded"
+                        ]
+                        },
+                        "type": "InitializeVariable",
+                        "inputs": {
+                        "variables": [
+                            {
+                            "name": "jsonObject",
+                            "type": "object",
+                            "value": {
+                                "accounting": [
+                                {
+                                    "age": 23,
+                                    "firstName": "John",
+                                    "lastName": "Doe"
+                                },
+                                {
+                                    "age": 32,
+                                    "firstName": "Mary",
+                                    "lastName": "Smith"
+                                }
+                                ],
+                                "sales": [
+                                {
+                                    "age": 27,
+                                    "firstName": "Sally",
+                                    "lastName": "Green"
+                                },
+                                {
+                                    "age": 41,
+                                    "firstName": "Jim",
+                                    "lastName": "Galley"
+                                }
+                                ]
+                            }
+                            }
+                        ]
+                        }
+                    },
+                    "var_Sales_Info": {
+                        "runAfter": {
+                        "var_Json_accounting": [
+                            "Succeeded"
+                        ]
+                        },
+                        "type": "InitializeVariable",
+                        "inputs": {
+                        "variables": [
+                            {
+                            "name": "sales-info",
+                            "type": "object"
+                            }
+                        ]
+                        }
+                    }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {},
+                "integrationServiceEnvironment": {
+                    "id": "/subscriptions/ee611083-4581-4ba1-8116-a502d4539206/resourceGroups/gcc-hk/providers/Microsoft.Web/sites/logicapp-ise-migrated-1"
+                }
+            }
+        }
+    ],
+    "outputs": {
+        "logicAppUrl": {
+           "type": "string",
+           "value": "[listCallbackURL(concat(resourceId('Microsoft.Logic/workflows/', 'HelloLogicAppsTemplate'), '/triggers/manual'), '2017-07-01').value]"
+        }
+     }
+}
