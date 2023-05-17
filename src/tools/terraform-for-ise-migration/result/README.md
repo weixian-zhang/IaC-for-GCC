@@ -1,1 +1,0 @@
-All generated Terraform modules and main.tf by hcl-generator-for-ise.py based on ISE export tool project structure will be located here

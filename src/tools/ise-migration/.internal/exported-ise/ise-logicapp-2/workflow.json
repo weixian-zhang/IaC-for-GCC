@@ -1,17 +1,6 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {},
-    "variables": {},
-    "resources": [
-        {
-            "type": "Microsoft.Logic/workflows",
-            "apiVersion": "2017-07-01",
-            "name": "HelloLogicAppsTemplate",
-            "location": "westus2",
-            "properties": {
-                "state": "Enabled",
-                "definition": {
+  "kind": "Stateful",
+  "definition": {
     "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
     "contentVersion": "1.0.0.0",
     "triggers": {
@@ -22,6 +11,28 @@
       }
     },
     "actions": {
+      "Get_blob_content_(V2)": {
+        "runAfter": {
+          "HTTP": [
+            "Succeeded"
+          ]
+        },
+        "metadata": {
+          "JTJmdHJhbnNmZXIlMmZjb25maWcueWFtbA==": "/transfer/config.yaml"
+        },
+        "type": "ServiceProvider",
+        "inputs": {
+          "serviceProviderConfiguration": {
+            "connectionName": "azureblob-1",
+            "operationId": "readBlob",
+            "serviceProviderId": "/serviceProviders/AzureBlob"
+          },
+          "parameters": {
+            "containerName": "JTJmdHJhbnNmZXIlMmZjb25maWcueWFtbA==",
+            "blobName": ""
+          }
+        }
+      },
       "HTTP": {
         "runAfter": {
           "var_Sales_Info": [
@@ -103,15 +114,5 @@
       }
     },
     "outputs": {}
-  },
-                "parameters": {}
-            }
-        }
-    ],
-    "outputs": {
-        "logicAppUrl": {
-           "type": "string",
-           "value": "[listCallbackURL(concat(resourceId('Microsoft.Logic/workflows/', 'HelloLogicAppsTemplate'), '/triggers/manual'), '2017-07-01').value]"
-        }
-     }
+  }
 }
