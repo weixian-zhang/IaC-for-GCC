@@ -52,7 +52,7 @@ resource "azurerm_logic_app_standard" "logic_app_standard" {
     app_service_plan_id         = azurerm_app_service_plan.app_service_plan.id
     storage_account_name        = azurerm_storage_account.logicapp_storage.name
     storage_account_access_key  = azurerm_storage_account.logicapp_storage.primary_access_key
-    storage_account_share_name  = var.logicapp_fileshare_name
+    storage_account_share_name  = var.logicapp_fileshare_name   # name of fileshare where all workflows, connections.json and parameters.json are kept
 
     https_only                  = true
     version                     = "~4"
