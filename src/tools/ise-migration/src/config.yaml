@@ -1,0 +1,24 @@
+
+- fileshare_workflow_map:
+    fileshareName: "fileshare-logic-standard-dev-001"
+    sas_url_envvar_name: ""
+    workflow_folder_names:
+      - ise-logicapp-1
+      - ise-logicapp-1.2
+      - ise-logicapp-1.3
+
+- fileshare_workflow_map:
+    fileshareName: "fileshare-logic-standard-dev-002"
+    sas_url_envvar_name: ""
+    workflow_folder_names:
+      - ise-logicapp-2
+      - ise-logicapp-3
+      - ise-logicapp-4
+
+# - fileshare_workflow_map:
+#     fileshareName: "fileshare-logic-standard-dev-002"
+#     sas_url_envvar_name: ""
+#     workflow_folder_names:  # empty means upload all "remaining" workflows
+
+  exported_ise_directory: "../.internal/exported-ise"
+  
