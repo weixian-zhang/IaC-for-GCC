@@ -4,10 +4,11 @@
 exported_ise_directory: "C:\\Weixian\\Projects\\IaC-for-GCC\\src\\tools\\ise-migration\\exported-ise"
 
 logicapp_storage_accounts:
+
   # example of workflows uploading to 2 Logic App Standard (LAS) linking to same storage account with 2 different fileshare
   - storage_account:
       account_name: "logicappisemigrated1"
-      sas_token_envvar_name: "logicapp_standard_sas_1"   # env variable name that stores storage account sas token
+      sas_token_envvar_name: "logicapp_standard_sas_1" # env variable name that stores storage account sas token, ISE-workflow-migrate will read from env var
       fileshares:
        -  file_share_name: "logicapp-ise-migrated-16370d0"
           overwrite_workflow: false
@@ -18,6 +19,7 @@ logicapp_storage_accounts:
           overwrite_workflow: true
           workflow_folder_names:
           - ise-logicapp-1.3
+
   # example of workflows uploading to another LAS linking to a separate storage account
   - storage_account:
       account_name: "logicappisemigrated2"
@@ -28,6 +30,7 @@ logicapp_storage_accounts:
           workflow_folder_names:
           - ise-logicapp-3
           - ise-logicapp-4
+  
 
 
   
