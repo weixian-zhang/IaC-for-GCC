@@ -1,0 +1,17 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    //${file}"
+
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "debug tools ISE migration",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/tools/ise-migration/src/main.py",
+            "console": "integratedTerminal"
+        }
+    ]
+}

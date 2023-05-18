@@ -1,0 +1,1 @@
+This "ISE workflow Migration tool" augments the offical [ISE export tool](#https://learn.microsoft.com/en-us/azure/logic-apps/export-from-ise-to-standard-logic-app) by deploying exported workflows in the "exported-ise" folder firectly to Logic App Standard mounted Azure Fileshare

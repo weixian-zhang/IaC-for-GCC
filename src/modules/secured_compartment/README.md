@@ -1,0 +1,1 @@
+A virtual network with Azure Firewall also known as Secured Compartment
