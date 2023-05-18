@@ -8,15 +8,11 @@ class LogicAppFileshareClient:
     
     def __init__(self, account_name, sas_token) -> None:
         
-        self.wwwroot = 'site/wwwroot'
         self.account_name = account_name
         self.sas_token = sas_token
         
         
-        
-        
-        
-    def upload_workflow(self, fileshareName, workflowDirName, filenameInFileshare, localWorkflowFilePath, overwrite=True) -> tuple([bool, str]):
+    def upload_file(self, fileshare_name, dir_in_fileshare, filename_in_fileshare, file_to_upload_path, overwrite=True) -> tuple([bool, str]):
         
         try:
             
@@ -29,36 +25,35 @@ class LogicAppFileshareClient:
             else:
                 return False, f'storage account \'{self.account_name}\' does not exist, please check your config.yaml'
             
-            file_client  = storage_client.get_share_client(fileshareName)
+            file_client  = storage_client.get_share_client(fileshare_name)
             
-            print(colored(f'try connecting to fileshare \'{self.account_name}/{fileshareName}\'','blue'))
+            print(colored(f'try connecting to fileshare \'{self.account_name}/{fileshare_name}\'','blue'))
             
             if self.is_fileshare_exist(file_client):
-                print(colored(f'connected to fileshare \'{self.account_name}/{fileshareName}\'','blue'))
+                print(colored(f'connected to fileshare \'{self.account_name}/{fileshare_name}\'','blue'))
             else:
-                return False, f'fileshare {self.account_name}/{fileshareName} does not exist, please check your config.yaml'
-        
-            workflowDir = f'{self.wwwroot}/{workflowDirName}'
+                return False, f'fileshare {self.account_name}/{fileshare_name} does not exist, please check your config.yaml'
+    
             
-            dir_client = file_client.get_directory_client(workflowDir)
+            dir_client = file_client.get_directory_client(dir_in_fileshare)
             
             if not self.is_fileshare_dir_exist(dir_client):
                 dir_client.create_directory()
-                print(colored(f'created workflow folder \'{self.account_name}/{workflowDir}\'','blue'))
+                print(colored(f'created workflow folder \'{self.account_name}/{dir_in_fileshare}\'','blue'))
             else:
-                print(colored(f'directory \'{fileshareName}/{workflowDir}\' already exist','blue'))
+                print(colored(f'directory \'{fileshare_name}/{dir_in_fileshare}\' already exist','blue'))
             
             
-            ok, err, workflowContent = self.read_file_as_str(localWorkflowFilePath)
+            ok, err, workflowContent = self.read_file_as_str(file_to_upload_path)
             
             if not ok:
                 return False, err
             
-            if not self.is_file_exist(dir_client, filenameInFileshare) or overwrite:
-                dir_client.upload_file(file_name=filenameInFileshare, data=workflowContent)
-                print(colored(f'overwriting workflow \'{workflowDirName}\' with \'{self.account_name}/{workflowDir}\'','green'))
+            if not self.is_file_exist_in_fileshare(dir_client, filename_in_fileshare) or overwrite:
+                dir_client.upload_file(file_name=filename_in_fileshare, data=workflowContent)
+                print(colored(f'overwriting workflow \'{dir_in_fileshare}\' with \'{self.account_name}/{dir_in_fileshare}\'','green'))
             else:
-                print(colored(f'Workflow \'{workflowDirName}\' already exist in \'{self.account_name}/{workflowDir}\'','green'))
+                print(colored(f'Workflow \'{dir_in_fileshare}\' already exist in \'{self.account_name}/{dir_in_fileshare}\'','green'))
             
             
             return True, ''
@@ -81,7 +76,7 @@ class LogicAppFileshareClient:
             return False
             
     
-    def is_file_exist(self, dir_client :ShareDirectoryClient, filename):
+    def is_file_exist_in_fileshare(self, dir_client :ShareDirectoryClient, filename):
         fileClient = dir_client.get_file_client(filename)
         
         try:
@@ -98,8 +93,11 @@ class LogicAppFileshareClient:
         except:
             return False
         
-    def read_file_as_str(self, filepath):
+    def read_file_as_str(self, filepath) -> tuple([bool,str,str]):
         try:
+            if not os.path.exists(filepath):
+                return False, f'file does not exists: {filepath}', ''
+            
             with open(filepath, 'r') as file:
                 data = file.read()
                 return True, '', data

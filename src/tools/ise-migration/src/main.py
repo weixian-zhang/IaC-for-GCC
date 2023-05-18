@@ -3,10 +3,11 @@ from config import Config, load_config
 from exported_ise import ExportedISEProject, WorkflowInfo
 from fileshare import LogicAppFileshareClient
 from termcolor import colored
+import os
 
 config = Config()
 exportedISE: ExportedISEProject = None
-
+wwwroot = 'site/wwwroot'
 
 # assumed constraints: 
     # 1 <= config.storage_accounts => 10
@@ -30,14 +31,48 @@ def upload_workflows_to_fileshares(config: Config, exportedISE: ExportedISEProje
                     
                 workflowInfo: WorkflowInfo = exportedISE.workflowDirs[wfn]
                 
-                ok, err = fsclient.upload_workflow(fileshareName, 
-                                                   workflowInfo.dirName, 
-                                                   exportedISE.workflowFileName, 
-                                                   workflowInfo.fullWorkflowFilePath,
-                                                   fs.overwrite_workflow)
+                workflowDir = f'{wwwroot}/{workflowInfo.dirName}'
                 
+                ok, err = fsclient.upload_file(fileshare_name=fileshareName, 
+                                               dir_in_fileshare=workflowDir, 
+                                               filename_in_fileshare=exportedISE.workflowFileName, 
+                                               file_to_upload_path=workflowInfo.fullWorkflowFilePath,
+                                               overwrite=fs.overwrite_workflow)
                 if not ok:
                     print(colored(err, 'red'))
+            
+            # upload parameters.json
+            if not os.path.exists(exportedISE.parametersFileNamePath):
+                print(colored(f'parameters.json does not exist to upload to \'{storage.account_name}/{fileshareName}/{wwwroot}\'', 'yellow'))
+            else:
+                ok, err = fsclient.upload_file( fileshare_name=fileshareName, 
+                                                dir_in_fileshare=wwwroot, 
+                                                filename_in_fileshare=exportedISE.parametersFileName, 
+                                                file_to_upload_path=exportedISE.parametersFileNamePath,
+                                                overwrite=True)
+                if not ok:
+                    print(colored(f'Error when upload \'{exportedISE.parametersFileName}\' \n {err}', 'red'))
+                else:
+                    print(colored(f'uploaded \'{exportedISE.parametersFileName}\' to \'{storage.account_name}/{fileshareName}/{wwwroot}\'', 'green'))
+                    
+                    
+            # upload connections.json
+            # upload parameters.json
+            if not os.path.exists(exportedISE.connectionsFileNamePath):
+                print(colored(f'parameters.json does not exist to upload to \'{storage.account_name}/{fileshareName}/{wwwroot}\'', 'yellow'))
+            else:
+                ok, err = fsclient.upload_file( fileshare_name=fileshareName, 
+                                                dir_in_fileshare=wwwroot, 
+                                                filename_in_fileshare=exportedISE.connectionsFileName, 
+                                                file_to_upload_path=exportedISE.connectionsFileNamePath,
+                                                overwrite=True)
+                if not ok:
+                    print(colored(f'Error when upload \'{exportedISE.connectionsFileName}\' \n {err}', 'red'))
+                else:
+                    print(colored(f'uploaded \'{exportedISE.connectionsFileName}\' to \'{storage.account_name}/{fileshareName}/{wwwroot}\'', 'green'))
+            
+                
+                
 
 
 def upload_parametersJson_to_fileshare(fileshareName, parameterFilePath):

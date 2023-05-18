@@ -13,8 +13,8 @@ class ExportedISEProject:
     def __init__(self, iseExportedDir:str) -> None:
                 
         self.hostJson = 'host.json'
-        self.connectionsJson= 'connections.json'
-        self.parametersJson= 'parameters.json'
+        self.connectionsFileName= 'connections.json'
+        self.parametersFileName = 'parameters.json'
         self.workflowFileName = 'workflow.json'
         
         self.dir_to_ignore = ['.development', '.logs','.vscode']
@@ -23,21 +23,30 @@ class ExportedISEProject:
         self.iseExportedDir = iseExportedDir
         self.workflowDirs = {}
         self.hostJsonPath = ''
-        self.connectionsJsonPath = ''
-        self.parametersJsonPath = ''
+        self.connectionsFileNamePath = ''
+        self.parametersFileNamePath = ''
         
     def load(self):
         
         allDirs = os.listdir(self.iseExportedDir)
         
+        # set parameters.json path
+        paramPath = os.path.join(self.iseExportedDir, self.parametersFileName)
+        if os.path.exists(paramPath):
+            self.parametersFileNamePath = paramPath
+            
+        connsPath = os.path.join(self.iseExportedDir, self.connectionsFileName)
+        if os.path.exists(connsPath):
+            self.connectionsFileNamePath = connsPath
+        
         for dir in allDirs:
             
-            if dir == self.connectionsJson:
-                self.connectionsJsonPath = os.path.join(self.iseExportedDir, dir)
+            if dir == self.connectionsFileName:
+                self.connectionsFileNamePath = os.path.join(self.iseExportedDir, dir)
                 continue
             
-            if dir == self.parametersJson:
-                self.parametersJsonPath = os.path.join(self.iseExportedDir, dir)
+            if dir == self.parametersFileName:
+                self.parametersFileNamePath = os.path.join(self.iseExportedDir, dir)
                 continue
             
             if dir in self.dir_to_ignore or dir in self.files_to_ignore:

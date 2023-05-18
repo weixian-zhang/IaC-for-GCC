@@ -32,6 +32,3 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
-src/tools/ise-migration/src/__pycache__/config.cpython-310.pyc
-src/tools/ise-migration/src/__pycache__/exported_ise.cpython-310.pyc
-src/tools/ise-migration/src/__pycache__/logicapp_fileshare_client.cpython-310.pyc
