@@ -10,7 +10,7 @@
             "name": "debug tools ISE migration",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/src/tools/ise-migration/src/deploy_ise_exported_workflows.py",
+            "program": "${workspaceFolder}/src/tools/ise-migration/src/main.py",
             "console": "integratedTerminal"
         }
     ]

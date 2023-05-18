@@ -8,7 +8,7 @@ class WorkflowInfo:
         self.dirPath = dirPath
         self.fullWorkflowFilePath = fullWorkflowFilePath
         
-class ExportedISE:
+class ExportedISEProject:
     
     def __init__(self, iseExportedDir:str) -> None:
                 
@@ -18,7 +18,7 @@ class ExportedISE:
         self.workflowFileName = 'workflow.json'
         
         self.dir_to_ignore = ['.development', '.logs','.vscode']
-        self.files_to_ignore = ['.funcignore','.gitignore']
+        self.files_to_ignore = ['.funcignore','.gitignore', 'host.json', 'local.settings.json']
     
         self.iseExportedDir = iseExportedDir
         self.workflowDirs = {}
@@ -38,10 +38,6 @@ class ExportedISE:
             
             if dir == self.parametersJson:
                 self.parametersJsonPath = os.path.join(self.iseExportedDir, dir)
-                continue
-            
-            if dir == self.hostJson:
-                self.hostJsonPath = os.path.join(self.iseExportedDir, dir)
                 continue
             
             if dir in self.dir_to_ignore or dir in self.files_to_ignore:

@@ -18,6 +18,7 @@ class StorageAccount:
 class Fileshare:
     def __init__(self) -> None:
         self.fileshareName = ''
+        self.overwrite_workflow = True
         self.workflow_folder_names = []
         
 class StorageWorkflowMap:
@@ -27,7 +28,7 @@ class StorageWorkflowMap:
         self.sas_token_envvar_name = ""
         self.workflow_folder_names = []
         
-def load_config() -> Config:
+def load_config() -> tuple([str, bool, Config]):
     
     config = Config()
     configFilePath = os.path.join(os.path.dirname(__file__), 'config.yaml')
@@ -51,8 +52,9 @@ def load_config() -> Config:
                 
                 sa.sas_token = os.environ.get(sa.sas_token_envvar_name)
                 if sa.sas_token == None:
-                    print(colored(f'error getting sas_token with invalid environment variable name', 'red'))
-                    return False, None
+                    errMsg = 'error getting sas_token with invalid environment variable name'
+                    print(colored(errMsg, 'red'))
+                    return False, errMsg, None
                     
                 
                 for fs in strgAcct['fileshares']:
@@ -60,13 +62,14 @@ def load_config() -> Config:
         
                     fileshare = Fileshare()
                     fileshare.fileshareName = fs['file_share_name']
+                    fileshare.overwrite_workflow = bool(fs['overwrite_workflow'])
                     fileshare.workflow_folder_names = fs['workflow_folder_names']
                     
                     sa.fileshares.append(fileshare)
                 
                 config.storage_accounts.append(sa)
                 
-            return True, config
+            return True, '', config
         
         except yaml.YAMLError as exc:
-            colored(exc, 'red')
+            return False, exc, None

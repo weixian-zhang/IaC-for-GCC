@@ -1,5 +1,16 @@
+variable "client_id" {
+}
 
-variable "environment_name" {
+variable "client_secret" {
+}
+
+variable "subscription_id" {
+}
+
+variable "tenant_id" {
+}
+
+variable "env" {
   type = string
   default = "dev"
 }
