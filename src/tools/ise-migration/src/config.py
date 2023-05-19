@@ -47,8 +47,8 @@ def load_config() -> tuple([str, bool, Config]):
                 
                 strgAcct = strg['storage_account']
                 sa = StorageAccount()
-                sa.account_name = strgAcct['account_name']
-                sa.sas_token_envvar_name = strgAcct['sas_token_envvar_name']
+                sa.account_name = strgAcct['account_name'] if strgAcct['account_name'] is not None else ''
+                sa.sas_token_envvar_name = strgAcct['sas_token_envvar_name'] if strgAcct['sas_token_envvar_name'] is not None else ''
                 
                 sa.sas_token = os.environ.get(sa.sas_token_envvar_name)
                 if sa.sas_token == None:
@@ -61,11 +61,14 @@ def load_config() -> tuple([str, bool, Config]):
                     
         
                     fileshare = Fileshare()
-                    fileshare.fileshareName = fs['file_share_name']
-                    fileshare.overwrite_workflow = bool(fs['overwrite_workflow'])
-                    fileshare.workflow_folder_names = fs['workflow_folder_names']
+                    fileshare.fileshareName = fs['file_share_name'] if fs['file_share_name'] is not None else ''
+                    fileshare.overwrite_workflow = bool(fs['overwrite_workflow']) if fs['overwrite_workflow'] is not None else False
+                    fileshare.workflow_folder_names = fs['workflow_folder_names'] if fs['workflow_folder_names'] is not None else []
                     
                     sa.fileshares.append(fileshare)
+                
+
+                fileshare.workflow_folder_names = set(fileshare.workflow_folder_names)
                 
                 config.storage_accounts.append(sa)
                 
