@@ -1,0 +1,63 @@
+
+env = "dev"
+
+location = "southeastasia"
+
+resource_group_name = "rg-logic-app-standard"
+
+new_log_analytics_workspace_name =  "log-logicapp-standard-001"
+
+app_insights_name = "appi-logicapp-standard-001"
+
+logic_app_settings = [
+    {
+        storage_name = "strgloappstdterr1"
+        logic_apps = [
+            {
+                resource_group_name = "rg-logic-app-standard"           # optional, default var.resource_group_name
+                logic_app_name = "ise-migrated-logicapp-001"            # also the name of fileshare
+                app_service_plan_sku_size = "WS1"                       # optional, default WS1
+                app_service_plan_name = "asp-ise-migrated-logicapp-001" # if name is the same, logic app will be "grouped" in thesame app service plan
+            },
+            {
+                logic_app_name = "ise-migrated-logicapp-002"
+                app_service_plan_sku_size = "WS1"
+                app_service_plan_name = "asp-ise-migrated-logicapp-001" 
+            },
+            {
+                logic_app_name = "ise-migrated-logicapp-003"
+                app_service_plan_sku_size = "WS1"
+                app_service_plan_name = "asp-ise-migrated-logicapp-002" 
+            }
+        ]
+    },
+    {
+        storage_name = "strgloappstdterr2"
+        logic_apps = [
+            {
+                logic_app_name = "ise-migrated-logicapp-004"
+                app_service_plan_sku_size = "WS1"
+                app_service_plan_name = "asp-ise-migrated-logicapp-004"
+            },
+            {
+                logic_app_name = "ise-migrated-logicapp-005"
+                app_service_plan_sku_size = "WS1"
+                app_service_plan_name = "asp-ise-migrated-logicapp-005"
+            },
+            {
+                logic_app_name = "ise-migrated-logicapp-006"
+                app_service_plan_sku_size = "WS1"
+                app_service_plan_name = "asp-ise-migrated-logicapp-005" 
+            }
+        ]
+    }
+  ]
+
+
+# *note: Service Provide Connection gets the connection access key,
+# conn_string and other secrets from Logic App -> Configuration -> App Settings
+# In situation when migrating workflows from ISE, consider using this option to add "API Connection" key/secret here
+# secret values can be in tfvars or recommended to be in env vars TF_VAR_{secret}
+logic_app_global_app_settings  = {
+    "azureblob-1_connectionString" = "azure blob connection string value or TF_VAR_{name}"
+}

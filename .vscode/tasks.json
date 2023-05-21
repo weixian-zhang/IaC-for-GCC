@@ -1,11 +1,11 @@
 {
     "tasks": [
        {
-        "label": "ise-migration-tool to exe",
+        "label": "shiv deploy-ise-workflows tool",
         "type": "shell",
-        "command": "pyinstaller --onefile deploy-ise-workflows.py --paths ${workspaceFolder}\\src\\tools\\ise-migration\\src\\.venv_ise_migration\\Lib\\site-packages",
+        "command": "shiv -o ./dist/deploy-ise-workflows.pyz --compile -e src.main:start .",
         "options": {
-            "cwd": "${workspaceFolder}/src/tools/ise-migration/src/",
+            "cwd": "${workspaceFolder}/src/tools/ise-migration/",
         }
        }
     ]

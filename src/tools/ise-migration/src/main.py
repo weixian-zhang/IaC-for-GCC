@@ -83,21 +83,14 @@ def upload_parametersJson_to_fileshare(fileshareName, parameterFilePath):
 def upload_connectionsJson_to_fileshare(fileshareName, connectionFilePath):
     pass
 
-configyamlPath = 'C:\\Weixian\\Projects\\IaC-for-GCC\\src\tools\\ise-migration\\src\\config.py'
-
-def main():
+def start():
     
     configYamlPath = get_config_from_cmd_arg()
-    
-    # if not configYamlPath:
-    #     print(colored('config.yaml file path not found', 'red'))
-    #     return
-    
 
     ok, err, config = load_config(configYamlPath)
     
     if not ok:
-        print(colored(err, 'red'))
+        print(colored(f'Error when loading config.yaml. \n {err}', 'red'))
         return
     
     exportedISE = ExportedISEProject(config.exported_ise_directory)
@@ -124,8 +117,8 @@ def get_config_from_cmd_arg():
     
 
 if __name__ == '__main__':
-    main() 
-    user_input = input('press anything to exit')
+    start() 
+    user_input = input('press any key to exit')
     
     
     

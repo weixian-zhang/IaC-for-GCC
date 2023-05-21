@@ -34,10 +34,16 @@ logicapp_storage_accounts:
           overwrite_workflow: true
           workflow_folder_names:
           - ise-logicapp-4
-          - ise-logicapp-5
+          
        -  file_share_name: "ise-migrated-logicapp-005"
           overwrite_workflow: true
           workflow_folder_names:
+          - ise-logicapp-5
+          
+       -  file_share_name: "ise-migrated-logicapp-006"
+          overwrite_workflow: true
+          workflow_folder_names:
+          - ise-logicapp-7
           - ise-logicapp-6
   
 
