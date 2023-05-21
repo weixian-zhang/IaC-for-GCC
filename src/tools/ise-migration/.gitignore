@@ -1,3 +1,5 @@
+.venv_ise_migration
+
 # Byte-compiled / optimized / DLL files
 /src/__pycache__/
 __pycache__/

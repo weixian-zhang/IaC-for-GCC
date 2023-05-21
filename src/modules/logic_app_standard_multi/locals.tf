@@ -13,9 +13,12 @@ locals {
 
   logic_apps = { 
     for idx, logicapp in flatten([
-        for idx, setting in var.logic_app_settings : 
+        for storageIdx, setting in var.logic_app_settings : 
         [ 
-            for idx, logic_app in setting.logic_apps: merge(logic_app, {"storage_name" : setting.storage_name})
+            for idx, logic_app in setting.logic_apps: merge(logic_app, {
+              "storage_index": storageIdx
+              "storage_name" : setting.storage_name
+              })
         ]
     ]) : idx => logicapp
   }

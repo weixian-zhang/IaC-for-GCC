@@ -6,12 +6,16 @@
 
     "version": "0.2.0",
     "configurations": [
+
         {
             "name": "debug tools ISE migration",
             "type": "python",
             "request": "launch",
+            //"args": ["${workspaceFolder}/src/tools/ise-migration/src/config.yaml"],
             "program": "${workspaceFolder}/src/tools/ise-migration/src/main.py",
-            "console": "integratedTerminal"
-        }
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/src/tools/ise-migration/src/",
+            "purpose": ["debug-in-terminal"]
+        },
     ]
 }

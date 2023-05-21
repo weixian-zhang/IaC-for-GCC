@@ -1,5 +1,5 @@
 
-from setuptools import setup
+from setuptools import setup, find_packages
 import os 
 
 reqTxtPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements.txt')
@@ -12,15 +12,15 @@ setup(
     description="Read the latest Real Python tutorials",
     long_description="",
     long_description_content_type="text/markdown",
-    url="https://github.com/realpython/reader",
-    author="Real Python",
-    author_email="info@realpython.com",
+    url="https://github.com/weixian-zhang/IaC-for-GCC",
+    author="weixian",
+    author_email="",
     license="MIT",
     classifiers=[
         "Programming Language :: Python :: 3",
     ],
-    packages=["reader"],
+    packages=find_packages(),
     include_package_data=True,
     install_requires=required,  
-    entry_points={"console_scripts": ["realpython=reader.__main__:main"]},
+    entry_points={"console_scripts": ["iseworkflowdeploy=iseworkflowdeploy.main:main"]},
 )

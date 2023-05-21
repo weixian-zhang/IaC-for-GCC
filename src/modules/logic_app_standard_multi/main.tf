@@ -59,43 +59,43 @@ resource "azurerm_application_insights" "appinsights" {
     workspace_id        = (var.existing_log_analytics_workspace_id == "") ? azurerm_log_analytics_workspace.law[0].id : var.existing_log_analytics_workspace_id
 }
 
-#Create a plan for the logic apps to run on
-# resource "azurerm_app_service_plan" "app_service_plan" {
-#     for_each = { for idx, setting in var.logic_app_settings : idx => { for idx, logic_app in setting.logic_apps: idx => logic_app }}
+#an app service plan for the logic apps to run on
+resource "azurerm_app_service_plan" "app_service_plan" {
+    for_each = local.logic_apps 
 
-#     name                    = each.value["app_service_plan_name"]
-#     location                = var.location
-#     resource_group_name     = coalesce(each.value.resource_group_name, var.resource_group_name)
-#     kind                    = "elastic"
-#     is_xenon                = "false"
-#     per_site_scaling        = "false"
-#     reserved                = "false"
-#     tags                    = var.tags
-#     zone_redundant          = "true"
-#     sku {
-#         tier = "WorkflowStandard"
-#         size = coalesce(each.value.app_service_plan_sku_size, "WS1")
-#     }
-# }
+    name                    = each.value.app_service_plan_name
+    location                = var.location
+    resource_group_name     = coalesce(each.value.resource_group_name, var.resource_group_name)
+    kind                    = "elastic"
+    is_xenon                = "false"
+    per_site_scaling        = "false"
+    reserved                = "false"
+    tags                    = var.tags
+    zone_redundant          = "false"
+    sku {
+        tier = "WorkflowStandard"
+        size = coalesce(each.value.app_service_plan_sku_size, "WS1")
+    }
+}
 
-# #Create a Logic App on the plan
-# resource "azurerm_logic_app_standard" "logic_app_standard" {
-#     for_each = { for idx, setting in var.logic_app_settings : idx => [ for logic_app in  setting.logic_apps: logic_app ] }
+#Create a Logic App on the plan
+resource "azurerm_logic_app_standard" "logic_app_standard" {
+    for_each = local.logic_apps 
 
-#     name                        = each.value.logic_app_name
-#     location                    = var.location
-#     resource_group_name         = coalesce(each.value.resource_group_name, var.resource_group_name)
-#     app_service_plan_id         = azurerm_app_service_plan.app_service_plan[each.key].id
-#     storage_account_name        = azurerm_storage_account.logicapp_storage[each.key].name
-#     storage_account_access_key  = azurerm_storage_account.logicapp_storage[each.key].primary_access_key
-#     storage_account_share_name  = "${each.value.logic_app_name}-${random_integer.fileshare_suffix.result}" # name of fileshare where all workflows, connections.json and parameters.json are kept
+    name                        = each.value.logic_app_name
+    location                    = var.location
+    resource_group_name         = coalesce(each.value.resource_group_name, var.resource_group_name)
+    app_service_plan_id         = azurerm_app_service_plan.app_service_plan[each.key].id
+    storage_account_name        = azurerm_storage_account.logicapp_storage[each.value.storage_index].name
+    storage_account_access_key  = azurerm_storage_account.logicapp_storage[each.value.storage_index].primary_access_key
+    storage_account_share_name  = each.value.logic_app_name # name of fileshare where all workflows, connections.json and parameters.json are kept
 
-#     https_only                  = true
-#     version                     = "~4"
+    https_only                  = true
+    version                     = "~4"
 
-#     identity  {
-#         type = "SystemAssigned"
-#     }
+    identity  {
+        type = "SystemAssigned"
+    }
 
-#     app_settings = local.global_app_settings
-# }
+    app_settings = local.global_app_settings
+}

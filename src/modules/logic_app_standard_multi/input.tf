@@ -42,55 +42,7 @@ variable "app_service_plan_name" {
 
 
 variable "logic_app_settings" {
-  default =  [
-    {
-        storage_name = "strgloappstdterr1"
-        logic_apps = [
-            {
-                #resource_group_name = optional(string)  # default var.resource_group_name
-                logic_app_name = "ise-migrated-logicapp-001"
-                #app_service_plan_sku_size = optional(string) # default WS1
-                app_service_plan_name = "asp-ise-migrated-logicapp-001"  # if name is the same, logic app will be "grouped" in thesame app service plan
-            },
-            {
-                #resource_group_name = optional(string)  # default var.resource_group_name
-                logic_app_name = "ise-migrated-logicapp-002"
-                #app_service_plan_sku_size = optional(string) # default WS1
-                app_service_plan_name = "asp-ise-migrated-logicapp-001"  # if name is the same, logic app will be "grouped" in thesame app service plan
-            },
-            {
-                #resource_group_name = optional(string)  # default var.resource_group_name
-                logic_app_name = "ise-migrated-logicapp-003"
-                #app_service_plan_sku_size = optional(string) # default WS1
-                app_service_plan_name = "asp-ise-migrated-logicapp-002"  # if name is the same, logic app will be "grouped" in thesame app service plan
-            }
-        ]
-    },
-    {
-        storage_name = "strgloappstdterr2"
-        logic_apps = [
-            {
-                #resource_group_name = optional(string)  # default var.resource_group_name
-                logic_app_name = "ise-migrated-logicapp-004"
-                #app_service_plan_sku_size = optional(string) # default WS1
-                app_service_plan_name = "asp-ise-migrated-logicapp-004"  # if name is the same, logic app will be "grouped" in thesame app service plan
-            },
-            {
-                #resource_group_name = optional(string)  # default var.resource_group_name
-                logic_app_name = "ise-migrated-logicapp-005"
-                #app_service_plan_sku_size = optional(string) # default WS1
-                app_service_plan_name = "asp-ise-migrated-logicapp-005"  # if name is the same, logic app will be "grouped" in thesame app service plan
-            },
-            {
-                #resource_group_name = optional(string)  # default var.resource_group_name
-                logic_app_name = "ise-migrated-logicapp-006"
-                #app_service_plan_sku_size = optional(string) # default WS1
-                app_service_plan_name = "asp-ise-migrated-logicapp-005"  # if name is the same, logic app will be "grouped" in thesame app service plan
-            }
-        ]
-    }
-  ]
-
+  
   type = list(object({
     storage_name = string
     logic_apps = list(object({

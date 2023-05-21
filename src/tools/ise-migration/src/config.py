@@ -28,10 +28,10 @@ class StorageWorkflowMap:
         self.sas_token_envvar_name = ""
         self.workflow_folder_names = []
         
-def load_config() -> tuple([str, bool, Config]):
+def load_config(configYamlPath: str) -> tuple([str, bool, Config]):
     
     config = Config()
-    configFilePath = os.path.join(os.path.dirname(__file__), 'config.yaml')
+    configFilePath = configYamlPath #os.path.join(os.path.dirname(__file__), 'config.yaml')
     
     with open(configFilePath, "r") as stream:
         try:

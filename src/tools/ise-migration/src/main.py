@@ -4,6 +4,8 @@ from exported_ise import ExportedISEProject, WorkflowInfo
 from fileshare import LogicAppFileshareClient
 from termcolor import colored
 import os
+import argparse
+# import readline
 
 config = Config()
 exportedISE: ExportedISEProject = None
@@ -81,10 +83,18 @@ def upload_parametersJson_to_fileshare(fileshareName, parameterFilePath):
 def upload_connectionsJson_to_fileshare(fileshareName, connectionFilePath):
     pass
 
+configyamlPath = 'C:\\Weixian\\Projects\\IaC-for-GCC\\src\tools\\ise-migration\\src\\config.py'
 
 def main():
     
-    ok, err, config = load_config()
+    configYamlPath = get_config_from_cmd_arg()
+    
+    # if not configYamlPath:
+    #     print(colored('config.yaml file path not found', 'red'))
+    #     return
+    
+
+    ok, err, config = load_config(configYamlPath)
     
     if not ok:
         print(colored(err, 'red'))
@@ -97,9 +107,25 @@ def main():
     upload_workflows_to_fileshares(config, exportedISE)
 
 
+def get_config_from_cmd_arg():
+    parser = argparse.ArgumentParser(description='welcome to ISE exported workflow deployment tool')
+    
+    parser.add_argument('configyaml', help='path to config.yaml')
+    
+    configYamlPath = './config.yaml'
+    
+    try:
+        args = parser.parse_args()
+        configYamlPath = args.configyaml
+    except:
+        pass
+    
+    return configYamlPath
+    
 
 if __name__ == '__main__':
-    main()
+    main() 
+    user_input = input('press anything to exit')
     
     
     
