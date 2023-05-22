@@ -1,7 +1,7 @@
 ## IaC-for-GCC  
 
 This repo contains:
-* Terraform modules of Azure Landing Zone examples used in GCC platform
+* Terraform modules of Azure Landing Zone examples used on [Goverment on Commercial Cloud platform](https://www.developer.tech.gov.sg/products/categories/infrastructure-and-hosting/government-on-commercial-cloud/overview.html)
 * Integration Service Environment (ISE) exported workflows migration toolkit
   * Some facts about Logic App Standard to note
   * How migration toolkit works
