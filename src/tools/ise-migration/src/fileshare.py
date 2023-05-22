@@ -20,19 +20,21 @@ class LogicAppFileshareClient:
             
             storage_client = ShareServiceClient(account_url=f"https://{self.account_name}.file.core.windows.net", credential=self.sas_token)
             
-            if self.is_storage_exist(storage_client):
+            strgExist, strgErr = self.is_storage_exist(storage_client)
+            if strgExist:
                 print(colored(f'connected to storage account \'{self.account_name}\'','blue'))
             else:
-                return False, f'storage account \'{self.account_name}\' does not exist, please check your config.yaml'
+                return False, f'Error when connecting to storage account \'{self.account_name}\'. \n {strgErr}'
             
             file_client  = storage_client.get_share_client(fileshare_name)
             
             print(colored(f'try connecting to fileshare \'{self.account_name}/{fileshare_name}\'','blue'))
             
-            if self.is_fileshare_exist(file_client):
+            fsExist, fsErr = self.is_fileshare_exist(file_client)
+            if fsExist:
                 print(colored(f'connected to fileshare \'{self.account_name}/{fileshare_name}\'','blue'))
             else:
-                return False, f'fileshare {self.account_name}/{fileshare_name} does not exist, please check your config.yaml'
+                return False, f'Error when connecting to fileshare {self.account_name}/{fileshare_name} \n {fsErr}'
     
             
             dir_client = file_client.get_directory_client(dir_in_fileshare)
@@ -61,19 +63,19 @@ class LogicAppFileshareClient:
         except Exception as e:
             return False, e
     
-    def is_storage_exist(self, storage_client: ShareServiceClient):
+    def is_storage_exist(self, storage_client: ShareServiceClient) -> tuple([bool, str]):
         try:
             storage_client.get_service_properties()
-            return True
-        except:
-            return False
+            return True, ''
+        except Exception as e:
+            return False, str(e)
     
-    def is_fileshare_exist(self, share_client: ShareClient):
+    def is_fileshare_exist(self, share_client: ShareClient) -> tuple([bool, str]):
         try:
             share_client.get_share_properties()
-            return True
-        except:
-            return False
+            return True, ''
+        except Exception as e:
+            return False, str(e)
             
     
     def is_file_exist_in_fileshare(self, dir_client :ShareDirectoryClient, filename):

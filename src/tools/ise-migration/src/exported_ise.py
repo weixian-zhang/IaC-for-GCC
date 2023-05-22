@@ -52,11 +52,15 @@ class ExportedISEProject:
             if dir in self.dir_to_ignore or dir in self.files_to_ignore:
                 continue
             
+            
+            
             dirNameOnly = dir
             wrkfDir = os.path.join(self.iseExportedDir, dir)
-            wrkfFile = os.path.join(self.iseExportedDir, dir, self.workflowFileName)
-            self.workflowDirs[dirNameOnly] = WorkflowInfo(dirNameOnly, wrkfDir, wrkfFile)
             
-            print(colored(f'workflow detected at ${wrkfDir}', 'green'))
+            if os.path.isdir(wrkfDir):
+                wrkfFile = os.path.join(self.iseExportedDir, dir, self.workflowFileName)
+                self.workflowDirs[dirNameOnly] = WorkflowInfo(dirNameOnly, wrkfDir, wrkfFile)
+            
+                print(colored(f'workflow detected at ${wrkfDir}', 'green'))
             
         

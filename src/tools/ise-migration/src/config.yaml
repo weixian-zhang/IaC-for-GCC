@@ -7,29 +7,44 @@ logicapp_storage_accounts:
 
   # example of workflows uploading to 2 Logic App Standard (LAS) linking to same storage account with 2 different fileshare
   - storage_account:
-      account_name: "logicappisemigrated1"
-      sas_token_envvar_name: "logicapp_standard_sas_1" # env variable name that stores storage account sas token, ISE-workflow-migrate will read from env var
+      account_name: "strgloappstdterr1"
+      sas_token_envvar_name: "strgloappstdterr1_sas" # env variable name that stores storage account sas token, ISE-workflow-migrate will read from env var
       fileshares:
-       -  file_share_name: "logicapp-ise-migrated-16370d0"
+       -  file_share_name: "ise-migrated-logicapp-001"
           overwrite_workflow: false
           workflow_folder_names:
           - ise-logicapp-1
           - ise-logicapp-1.2
-       -  file_share_name: "logic-standard-dev-39cf0"
+       -  file_share_name: "ise-migrated-logicapp-002"
           overwrite_workflow: true
           workflow_folder_names:
-          - ise-logicapp-1.3
-
-  # example of workflows uploading to another LAS linking to a separate storage account
-  - storage_account:
-      account_name: "logicappisemigrated2"
-      sas_token_envvar_name: "logicapp_standard_sas_2"
-      fileshares:
-       -  file_share_name: "fileshare-logic-standard-dev-001"
+          - ise-logicapp-2
+       -  file_share_name: "ise-migrated-logicapp-003"
           overwrite_workflow: true
           workflow_folder_names:
           - ise-logicapp-3
+          
+
+  # example of workflows uploading to another LAS linking to a separate storage account
+  - storage_account:
+      account_name: "strgloappstdterr2"
+      sas_token_envvar_name: "strgloappstdterr2_sas"
+      fileshares:
+       -  file_share_name: "ise-migrated-logicapp-004"
+          overwrite_workflow: true
+          workflow_folder_names:
           - ise-logicapp-4
+          
+       -  file_share_name: "ise-migrated-logicapp-005"
+          overwrite_workflow: true
+          workflow_folder_names:
+          - ise-logicapp-5
+          
+       -  file_share_name: "ise-migrated-logicapp-006"
+          overwrite_workflow: true
+          workflow_folder_names:
+          - ise-logicapp-7
+          - ise-logicapp-6
   
 
 

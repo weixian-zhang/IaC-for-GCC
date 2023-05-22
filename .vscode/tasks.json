@@ -1,0 +1,12 @@
+{
+    "tasks": [
+       {
+        "label": "shiv deploy-ise-workflows tool",
+        "type": "shell",
+        "command": "shiv -o ./dist/deploy-ise-workflows.pyz --compile -e src.main:start .",
+        "options": {
+            "cwd": "${workspaceFolder}/src/tools/ise-migration/",
+        }
+       }
+    ]
+}
