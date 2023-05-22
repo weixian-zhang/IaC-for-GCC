@@ -54,8 +54,7 @@ logic_app_settings = [
   ]
 
 
-# *note: Service Provide Connection gets the connection access key,
-# conn_string and other secrets from Logic App -> Configuration -> App Settings
+# *note: Service Provide Connection gets the connection access key, conn_string and other secrets from Logic App -> Configuration -> App Settings
 # In situation when migrating workflows from ISE, consider using this option to add "API Connection" key/secret here
 # secret values can be in tfvars or recommended to be in env vars TF_VAR_{secret}
 logic_app_global_app_settings  = {
