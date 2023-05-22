@@ -22,12 +22,13 @@ Workflows in Logic App is treated like Web Apps and Function Apps which allow yo
 * Logic App Standard requires a mounted Azure Fileshare to store workflows. Each workflow is located in site/wwwroot/workflow-folder-name
 * ISE workflow's API Connections is known as "Service Provider Connections"
 * the secret value of each service connection for example Event Hub connection string, Storage connection string are read from [Logic App's App Settings](https://learn.microsoft.com/en-us/azure/logic-apps/edit-app-settings-host-settings?tabs=azure-portal#manage-app-settings---localsettingsjson)  
+* 
 
 <br />
 
 ### How migration toolkit works
 This migration toolkit contains 2 artifacts:
-* [Terraform module](https://github.com/weixian-zhang/IaC-for-GCC/tree/main/src/modules/logic_app_standard_multi) - for your to create multiple Logic App Standards and multiple Storage accounts and filshares. Logic App Standard re
+* [Terraform module](https://github.com/weixian-zhang/IaC-for-GCC/tree/main/src/modules/logic_app_standard_multi) - Allows you to create multiple Logic App Standards, Storage accounts and filshares.
 * Cmdline app (Python zipapp) - Upload workflows
   * deploy-ise-workflows-v0.6.0.zip
   * config.yaml
