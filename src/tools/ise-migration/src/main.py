@@ -5,11 +5,12 @@ from fileshare import LogicAppFileshareClient
 from termcolor import colored
 import os
 import argparse
-# import readline
+from log import Logger
 
 config = Config()
 exportedISE: ExportedISEProject = None
 wwwroot = 'site/wwwroot'
+logger = Logger()
 
 # assumed constraints: 
     # 1 <= config.storage_accounts => 10
@@ -18,17 +19,24 @@ wwwroot = 'site/wwwroot'
 # time complexity: O(storage_accounts * n2) = O(n2) where n <= 500 
 def upload_workflows_to_fileshares(config: Config, exportedISE: ExportedISEProject):
     
+    logger.info('begin upload workflows, parameters.json and connections.json to fileshares \n')
+    
     for storage in config.storage_accounts:
+        
         fsclient = LogicAppFileshareClient(storage.account_name, storage.sas_token)
+        
+        logger.info(f'uploading at storage {storage.account_name}')
         
         for fs in storage.fileshares:
             
             fileshareName = fs.fileshareName
             
+            logger.info(f'at fileshare {fileshareName}')
+            
             for wfn in fs.workflow_folder_names:
                 
                 if wfn not in exportedISE.workflowDirs:
-                    print(colored(f'workflow-folde-name {wfn} is not found in exported-ise-project folder', 'yellow'))
+                    logger.warn(f'workflow-folde-name {wfn} is not found in exported-ise-project folder')
                     continue
                     
                 workflowInfo: WorkflowInfo = exportedISE.workflowDirs[wfn]
@@ -41,61 +49,69 @@ def upload_workflows_to_fileshares(config: Config, exportedISE: ExportedISEProje
                                                file_to_upload_path=workflowInfo.fullWorkflowFilePath,
                                                overwrite=fs.overwrite_workflow)
                 if not ok:
-                    print(colored(err, 'red'))
+                    logger.error(err)
             
-            # upload parameters.json
-            if not os.path.exists(exportedISE.parametersFileNamePath):
-                print(colored(f'parameters.json does not exist to upload to \'{storage.account_name}/{fileshareName}/{wwwroot}\'', 'yellow'))
-            else:
-                ok, err = fsclient.upload_file( fileshare_name=fileshareName, 
-                                                dir_in_fileshare=wwwroot, 
-                                                filename_in_fileshare=exportedISE.parametersFileName, 
-                                                file_to_upload_path=exportedISE.parametersFileNamePath,
-                                                overwrite=True)
-                if not ok:
-                    print(colored(f'Error when upload \'{exportedISE.parametersFileName}\' \n {err}', 'red'))
-                else:
-                    print(colored(f'uploaded \'{exportedISE.parametersFileName}\' to \'{storage.account_name}/{fileshareName}/{wwwroot}\'', 'green'))
-                    
-                    
-            # upload connections.json
-            # upload parameters.json
-            if not os.path.exists(exportedISE.connectionsFileNamePath):
-                print(colored(f'parameters.json does not exist to upload to \'{storage.account_name}/{fileshareName}/{wwwroot}\'', 'yellow'))
-            else:
-                ok, err = fsclient.upload_file( fileshare_name=fileshareName, 
-                                                dir_in_fileshare=wwwroot, 
-                                                filename_in_fileshare=exportedISE.connectionsFileName, 
-                                                file_to_upload_path=exportedISE.connectionsFileNamePath,
-                                                overwrite=True)
-                if not ok:
-                    print(colored(f'Error when upload \'{exportedISE.connectionsFileName}\' \n {err}', 'red'))
-                else:
-                    print(colored(f'uploaded \'{exportedISE.connectionsFileName}\' to \'{storage.account_name}/{fileshareName}/{wwwroot}\'', 'green'))
+            
+            upload_parametersJson_to_fileshare(fsclient, storage.account_name, fileshareName, exportedISE)
+            
+            upload_connectionsJson_to_fileshare(fsclient, storage.account_name, fileshareName, exportedISE)
             
                 
-                
+            
+# upload parameters.json
+def upload_parametersJson_to_fileshare(fsclient, storage_account_name, file_share_name, exportedISE: ExportedISEProject):
+    if not os.path.exists(exportedISE.parametersFileNamePath):
+        logger.warn(f'parameters.json does not exist to upload to \'{storage_account_name}/{file_share_name}/{wwwroot}\'')
+    else:
+        ok, err = fsclient.upload_file( fileshare_name=file_share_name, 
+                                        dir_in_fileshare=wwwroot, 
+                                        filename_in_fileshare=exportedISE.parametersFileName, 
+                                        file_to_upload_path=exportedISE.parametersFileNamePath,
+                                        overwrite=True)
+        if not ok:
+            logger.error(f'Error when upload \'{exportedISE.parametersFileName}\' \n {err}')
+        else:
+            logger.success(f'uploaded \'{exportedISE.parametersFileName}\' to \'{storage_account_name}/{file_share_name}/{wwwroot}\'')
+
+# upload connections.json
+def upload_connectionsJson_to_fileshare(fsclient, storage_account_name, file_share_name, exportedISE: ExportedISEProject):
+    if not os.path.exists(exportedISE.connectionsFileNamePath):
+        logger.info(f'parameters.json does not exist to upload to \'{storage_account_name}/{file_share_name}/{wwwroot}\'')
+    else:
+        ok, err = fsclient.upload_file( fileshare_name=file_share_name, 
+                                        dir_in_fileshare=wwwroot, 
+                                        filename_in_fileshare=exportedISE.connectionsFileName, 
+                                        file_to_upload_path=exportedISE.connectionsFileNamePath,
+                                        overwrite=True)
+        if not ok:
+            logger.error(f'Error when upload \'{exportedISE.connectionsFileName}\' \n {err}')
+        else:
+            logger.success(f'uploaded \'{exportedISE.connectionsFileName}\' to \'{storage_account_name}/{file_share_name}/{wwwroot}\'')
 
 
-def upload_parametersJson_to_fileshare(fileshareName, parameterFilePath):
-    pass
-
-def upload_connectionsJson_to_fileshare(fileshareName, connectionFilePath):
-    pass
 
 def start():
     
     configYamlPath = get_config_from_cmd_arg()
-
+    
+    logger.info(f'loading config.yaml from: {configYamlPath}')
+    
     ok, err, config = load_config(configYamlPath)
     
     if not ok:
-        print(colored(f'Error when loading config.yaml. \n {err}', 'red'))
+        logger.error(f'Error when loading config.yaml. \n {err}')
+        #print(colored(f'Error when loading config.yaml. \n {err}', 'red'))
         return
+    
+    logger.info(f'config.yaml loaded \n')
+    
+    logger.info(f'loading ISE exported project folder structure from: {config.exported_ise_directory}')
     
     exportedISE = ExportedISEProject(config.exported_ise_directory)
     
     exportedISE.load()
+    
+    logger.info(f'ISE exported project folder structurel loaded \n')
     
     upload_workflows_to_fileshares(config, exportedISE)
 
