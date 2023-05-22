@@ -1,6 +1,7 @@
 
 import os
 from termcolor import colored
+from log import Logger
 
 class WorkflowInfo:
     def __init__(self, dirName, dirPath, fullWorkflowFilePath) -> None:
@@ -25,6 +26,8 @@ class ExportedISEProject:
         self.hostJsonPath = ''
         self.connectionsFileNamePath = ''
         self.parametersFileNamePath = ''
+        
+        self.logger = Logger()
         
     def load(self):
         
@@ -61,6 +64,6 @@ class ExportedISEProject:
                 wrkfFile = os.path.join(self.iseExportedDir, dir, self.workflowFileName)
                 self.workflowDirs[dirNameOnly] = WorkflowInfo(dirNameOnly, wrkfDir, wrkfFile)
             
-                print(colored(f'workflow detected at ${wrkfDir}', 'green'))
+                self.logger.success(f'workflow detected at \'${wrkfDir}\'')
             
         

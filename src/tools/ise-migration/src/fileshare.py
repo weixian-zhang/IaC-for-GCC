@@ -2,7 +2,7 @@
 from azure.storage.fileshare import ShareServiceClient, ShareDirectoryClient, ShareClient
 import os
 from termcolor import colored
-
+from log import Logger
 
 class LogicAppFileshareClient:
     
@@ -10,29 +10,30 @@ class LogicAppFileshareClient:
         
         self.account_name = account_name
         self.sas_token = sas_token
+        self.logger = Logger()
         
         
     def upload_file(self, fileshare_name, dir_in_fileshare, filename_in_fileshare, file_to_upload_path, overwrite=True) -> tuple([bool, str]):
         
         try:
             
-            print(colored(f'try connecting to storage account \'{self.account_name}\'','blue'))
+            self.logger.info(f'try connecting to storage account \'{self.account_name}\'')
             
             storage_client = ShareServiceClient(account_url=f"https://{self.account_name}.file.core.windows.net", credential=self.sas_token)
             
             strgExist, strgErr = self.is_storage_exist(storage_client)
             if strgExist:
-                print(colored(f'connected to storage account \'{self.account_name}\'','blue'))
+                self.logger.info(f'connected to storage account \'{self.account_name}\'')
             else:
                 return False, f'Error when connecting to storage account \'{self.account_name}\'. \n {strgErr}'
             
             file_client  = storage_client.get_share_client(fileshare_name)
             
-            print(colored(f'try connecting to fileshare \'{self.account_name}/{fileshare_name}\'','blue'))
+            self.logger.info(f'try connecting to fileshare \'{self.account_name}/{fileshare_name}\'')
             
             fsExist, fsErr = self.is_fileshare_exist(file_client)
             if fsExist:
-                print(colored(f'connected to fileshare \'{self.account_name}/{fileshare_name}\'','blue'))
+                self.logger.info(f'connected to fileshare \'{self.account_name}/{fileshare_name}\'')
             else:
                 return False, f'Error when connecting to fileshare {self.account_name}/{fileshare_name} \n {fsErr}'
     
@@ -41,9 +42,10 @@ class LogicAppFileshareClient:
             
             if not self.is_fileshare_dir_exist(dir_client):
                 dir_client.create_directory()
-                print(colored(f'created workflow folder \'{self.account_name}/{dir_in_fileshare}\'','blue'))
+                
+                self.logger.info(f'created workflow folder \'{self.account_name}/{dir_in_fileshare}\'')
             else:
-                print(colored(f'directory \'{fileshare_name}/{dir_in_fileshare}\' already exist','blue'))
+                self.logger.info(f'directory \'{fileshare_name}/{dir_in_fileshare}\' already exist')
             
             
             ok, err, workflowContent = self.read_file_as_str(file_to_upload_path)
@@ -53,9 +55,9 @@ class LogicAppFileshareClient:
             
             if not self.is_file_exist_in_fileshare(dir_client, filename_in_fileshare) or overwrite:
                 dir_client.upload_file(file_name=filename_in_fileshare, data=workflowContent)
-                print(colored(f'overwriting workflow \'{dir_in_fileshare}\' with \'{self.account_name}/{dir_in_fileshare}\'','green'))
+                self.logger.info(f'overwriting workflow \'{dir_in_fileshare}\' with \'{self.account_name}/{dir_in_fileshare}\' \n')
             else:
-                print(colored(f'Workflow \'{dir_in_fileshare}\' already exist in \'{self.account_name}/{dir_in_fileshare}\'','green'))
+                self.logger.success(f'Workflow \'{dir_in_fileshare}\' already exist in \'{self.account_name}/{dir_in_fileshare}\' \n')
             
             
             return True, ''

@@ -1,12 +1,15 @@
 from termcolor import colored
 import os
 import yaml
+from log import Logger
 
+logger = Logger()
 class Config:
     
     def __init__(self) -> None:
         self.storage_accounts = []
         self.exported_ise_directory = '../.internal/exported-ise'
+        
 
 class StorageAccount:
     def __init__(self) -> None:
@@ -39,6 +42,7 @@ def load_config(configYamlPath: str) -> tuple([str, bool, Config]):
             yamlConfig = yaml.safe_load(stream)
         
         if len(yamlConfig) == 0:
+            
             colored('config.yaml is either empty or invalid', 'red')
             return
         
@@ -54,7 +58,8 @@ def load_config(configYamlPath: str) -> tuple([str, bool, Config]):
             sa.sas_token = os.environ.get(sa.sas_token_envvar_name)
             if sa.sas_token == None:
                 errMsg = 'error getting sas_token with invalid environment variable name'
-                print(colored(errMsg, 'red'))
+                logger.error(errMsg)
+                #print(colored(errMsg, 'red'))
                 return False, errMsg, None
                 
             
