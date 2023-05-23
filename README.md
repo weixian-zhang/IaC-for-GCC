@@ -22,7 +22,12 @@ Workflows in Logic App is treated like Web Apps and Function Apps which allow yo
 * Logic App Standard requires a mounted Azure Fileshare to store workflows. Each workflow is located in site/wwwroot/workflow-folder-name
 * ISE workflow's API Connections is known as "Service Provider Connections"
 * the secret value of each service connection for example Event Hub connection string, Storage connection string are read from [Logic App's App Settings](https://learn.microsoft.com/en-us/azure/logic-apps/edit-app-settings-host-settings?tabs=azure-portal#manage-app-settings---localsettingsjson)  
-* 
+* Each Logic App Standard has an Azure Fileshare mounted, all workflows, connections.json and parameters.json are stored in fileshare  
+
+  <img src="https://github.com/weixian-zhang/IaC-for-GCC/assets/43234101/84bdcec3-cb10-4e33-8ea0-da5d3dc56a1f" width="420px" height="300px" />
+  <img src="https://github.com/weixian-zhang/IaC-for-GCC/assets/43234101/dc0cfe36-e806-427c-8ecb-627f54be1100" width="420px" height="300px" />
+
+
 
 <br />
 
