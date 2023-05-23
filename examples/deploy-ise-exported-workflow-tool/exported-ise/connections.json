@@ -1,0 +1,14 @@
+{
+  "serviceProviderConnections": {
+    "azureblob-1": {
+      "parameterValues": {
+        "connectionString": "@appsetting('azureblob-1_connectionString')"
+      },
+      "serviceProvider": {
+        "id": "/serviceProviders/AzureBlob"
+      },
+      "displayName": "azureblob-1"
+    }
+  },
+  "managedApiConnections": {}
+}
