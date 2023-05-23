@@ -1,0 +1,118 @@
+{
+  "kind": "Stateful",
+  "definition": {
+    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+    "contentVersion": "1.0.0.0",
+    "triggers": {
+      "manual": {
+        "type": "Request",
+        "kind": "Http",
+        "inputs": {}
+      }
+    },
+    "actions": {
+      "Get_blob_content_(V2)": {
+        "runAfter": {
+          "HTTP": [
+            "Succeeded"
+          ]
+        },
+        "metadata": {
+          "JTJmdHJhbnNmZXIlMmZjb25maWcueWFtbA==": "/transfer/config.yaml"
+        },
+        "type": "ServiceProvider",
+        "inputs": {
+          "serviceProviderConfiguration": {
+            "connectionName": "azureblob-1",
+            "operationId": "readBlob",
+            "serviceProviderId": "/serviceProviders/AzureBlob"
+          },
+          "parameters": {
+            "containerName": "JTJmdHJhbnNmZXIlMmZjb25maWcueWFtbA==",
+            "blobName": ""
+          }
+        }
+      },
+      "HTTP": {
+        "runAfter": {
+          "var_Sales_Info": [
+            "Succeeded"
+          ]
+        },
+        "type": "Http",
+        "inputs": {
+          "body": "@variables('jsonObject')",
+          "method": "POST",
+          "uri": "https://httpbin.org/post"
+        }
+      },
+      "Response": {
+        "runAfter": {},
+        "type": "Response",
+        "kind": "Http",
+        "inputs": {
+          "statusCode": 200
+        }
+      },
+      "var_Json_accounting": {
+        "runAfter": {
+          "Response": [
+            "Succeeded"
+          ]
+        },
+        "type": "InitializeVariable",
+        "inputs": {
+          "variables": [
+            {
+              "name": "jsonObject",
+              "type": "object",
+              "value": {
+                "accounting": [
+                  {
+                    "age": 23,
+                    "firstName": "John",
+                    "lastName": "Doe"
+                  },
+                  {
+                    "age": 32,
+                    "firstName": "Mary",
+                    "lastName": "Smith"
+                  }
+                ],
+                "sales": [
+                  {
+                    "age": 27,
+                    "firstName": "Sally",
+                    "lastName": "Green"
+                  },
+                  {
+                    "age": 41,
+                    "firstName": "Jim",
+                    "lastName": "Galley"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "var_Sales_Info": {
+        "runAfter": {
+          "var_Json_accounting": [
+            "Succeeded"
+          ]
+        },
+        "type": "InitializeVariable",
+        "inputs": {
+          "variables": [
+            {
+              "name": "sales-info",
+              "type": "object"
+            }
+          ]
+        }
+      }
+    },
+    "outputs": {}
+  }
+}

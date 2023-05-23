@@ -1,0 +1,51 @@
+
+# target folder for ISE export tool to export to
+# https://learn.microsoft.com/en-us/azure/logic-apps/export-from-ise-to-standard-logic-app
+exported_ise_directory: "./exported-ise"
+
+logicapp_storage_accounts:
+
+  # example of workflows uploading to 2 Logic App Standard (LAS) linking to same storage account with 2 different fileshare
+  - storage_account:
+      account_name: "strgloappstdterr1"
+      sas_token_envvar_name: "strgloappstdterr1_sas" # env variable name that stores storage account sas token, ISE-workflow-migrate will read from env var
+      fileshares:
+       -  file_share_name: "ise-migrated-logicapp-001"
+          overwrite_workflow: false
+          workflow_folder_names:
+          - ise-logicapp-1
+          - ise-logicapp-1.2
+       -  file_share_name: "ise-migrated-logicapp-002"
+          overwrite_workflow: true
+          workflow_folder_names:
+          - ise-logicapp-2
+       -  file_share_name: "ise-migrated-logicapp-003"
+          overwrite_workflow: true
+          workflow_folder_names:
+          - ise-logicapp-3
+          
+
+  # example of workflows uploading to another LAS linking to a separate storage account
+  - storage_account:
+      account_name: "strgloappstdterr2"
+      sas_token_envvar_name: "strgloappstdterr2_sas"
+      fileshares:
+       -  file_share_name: "ise-migrated-logicapp-004"
+          overwrite_workflow: true
+          workflow_folder_names:
+          - ise-logicapp-4
+          
+       -  file_share_name: "ise-migrated-logicapp-005"
+          overwrite_workflow: true
+          workflow_folder_names:
+          - ise-logicapp-5
+          
+       -  file_share_name: "ise-migrated-logicapp-006"
+          overwrite_workflow: true
+          workflow_folder_names:
+          - ise-logicapp-7
+          - ise-logicapp-6
+  
+
+
+  

@@ -1,0 +1,3 @@
+This folder contains the exported workflow and project artifacts from [ISE export tool](#https://learn.microsoft.com/en-us/azure/logic-apps/export-from-ise-to-standard-logic-app)  
+
+This [folder structure](#https://learn.microsoft.com/en-us/azure/logic-apps/export-from-ise-to-standard-logic-app#project-folder-structure) follows the [Logic App Standard project structure](#https://learn.microsoft.com/en-us/azure/logic-apps/create-single-tenant-workflows-visual-studio-code)
