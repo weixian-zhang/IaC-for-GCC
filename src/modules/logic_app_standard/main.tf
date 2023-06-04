@@ -1,22 +1,4 @@
 
-terraform {
-  required_providers {
-    azurerm = {
-        source = "hashicorp/azurerm"
-        version = "3.55.0"
-    }
-  }
-}
-
-provider "azurerm" {
-  features {}
-
-  subscription_id   = var.subscription_id
-  tenant_id         = var.tenant_id
-  client_id         = var.client_id
-  client_secret     = var.client_secret 
-}
-
 
 #Create a storage account to be used by the logic apps
 resource "azurerm_storage_account" "logicapp_storage" {
@@ -27,22 +9,6 @@ resource "azurerm_storage_account" "logicapp_storage" {
     account_replication_type = "ZRS"
 }
 
-#Create a plan for the logic apps to run on
-resource "azurerm_app_service_plan" "app_service_plan" {
-    name                    = var.app_service_plan_name
-    location                = var.location
-    resource_group_name     = var.resource_group_name
-    kind                    = "elastic"
-    is_xenon                = "false"
-    per_site_scaling        = "false"
-    reserved                = "false"
-    tags                    = {}
-    zone_redundant          = "false"
-    sku {
-        tier = "WorkflowStandard"
-        size = var.app_service_plan_sku
-    }
-}
 
 #Create a log analytics workspace for use by logic apps and app insights in workspace mode
 resource "azurerm_log_analytics_workspace" "law" {
@@ -62,6 +28,24 @@ resource "azurerm_application_insights" "appinsights_logicapp" {
     application_type    = "web"
     workspace_id        = (var.existing_log_analytics_workspace_id == "") ? azurerm_log_analytics_workspace.law[0].id : var.existing_log_analytics_workspace_id
 }
+
+#Create a plan for the logic apps to run on
+resource "azurerm_app_service_plan" "app_service_plan" {
+    name                    = var.app_service_plan_name
+    location                = var.location
+    resource_group_name     = var.resource_group_name
+    kind                    = "elastic"
+    is_xenon                = "false"
+    per_site_scaling        = "false"
+    reserved                = "false"
+    tags                    = {}
+    zone_redundant          = "true"
+    sku {
+        tier = "WorkflowStandard"
+        size = var.app_service_plan_sku
+    }
+}
+
 
 #Create a Logic App on the plan
 resource "azurerm_logic_app_standard" "logic_app_standard" {

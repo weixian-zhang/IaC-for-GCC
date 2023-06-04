@@ -1,26 +1,26 @@
 
-terraform {
-  required_providers {
-    azurerm = {
-        source = "hashicorp/azurerm"
-        version = "3.55.0"
-    }
+# terraform {
+#   required_providers {
+#     azurerm = {
+#         source = "hashicorp/azurerm"
+#         version = "3.55.0"
+#     }
 
-    random = {
-      source  = "hashicorp/random"
-      version = "3.4.3"
-    }
-  }
-}
+#     random = {
+#       source  = "hashicorp/random"
+#       version = "3.4.3"
+#     }
+#   }
+# }
 
-provider "azurerm" {
-  features {}
+# provider "azurerm" {
+#   features {}
 
-  subscription_id   = var.subscription_id
-  tenant_id         = var.tenant_id
-  client_id         = var.client_id
-  client_secret     = var.client_secret 
-}
+#   subscription_id   = var.subscription_id
+#   tenant_id         = var.tenant_id
+#   client_id         = var.client_id
+#   client_secret     = var.client_secret 
+# }
 
 resource "random_integer" "fileshare_suffix" {
   min = 1
@@ -71,7 +71,7 @@ resource "azurerm_app_service_plan" "app_service_plan" {
     per_site_scaling        = "false"
     reserved                = "false"
     tags                    = var.tags
-    zone_redundant          = "false"
+    zone_redundant          = "true"
     sku {
         tier = "WorkflowStandard"
         size = coalesce(each.value.app_service_plan_sku_size, "WS1")
